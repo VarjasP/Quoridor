@@ -1,5 +1,7 @@
 package hu.zpb.quoridor.data;
 
+import hu.zpb.quoridor.network.GameTRX;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -53,7 +55,7 @@ public class GUI extends JPanel implements ActionListener {
 
         JLabel lYourName = new JLabel("Your name:");
         lYourName.setBounds(350, 120, 100, 30);
-        tfYourName = new JTextField();
+        tfYourName = new JTextField("Name");
         tfYourName.setBounds(450, 120, 100, 30);
 
         JLabel lSelectColor = new JLabel("Select a color:");
@@ -80,11 +82,11 @@ public class GUI extends JPanel implements ActionListener {
         lYourIP.setBounds(100, 80, 100, 30);
         tfYourIP = new JTextField();
         tfYourIP.setBounds(200, 80, 150, 30);
-        tfYourIP.setText("127.0.0.1");
+        tfYourIP.setText(GameTRX.getInstance().getMyIP());
         tfYourIP.setEditable(false);
         JLabel lSetPort = new JLabel("Set port:");
         lSetPort.setBounds(100, 120, 100, 30);
-        tfSetPort = new JTextField();
+        tfSetPort = new JTextField("51247");
         tfSetPort.setBounds(200, 120, 150, 30);
 
         bPlayServer = new JButton("Play (server)");
@@ -108,11 +110,11 @@ public class GUI extends JPanel implements ActionListener {
         lRunClient.setBounds(125, 30, 200, 50);
         JLabel lServerIP = new JLabel("Server IP:");
         lServerIP.setBounds(100, 80, 100, 30);
-        tfServerIP = new JTextField();
+        tfServerIP = new JTextField(GameTRX.getInstance().getMyIP());
         tfServerIP.setBounds(200, 80, 150, 30);
         JLabel lServerPort = new JLabel("Server port:");
         lServerPort.setBounds(100, 120, 100, 30);
-        tfServerPort = new JTextField();
+        tfServerPort = new JTextField("51247");
         tfServerPort.setBounds(200, 120, 150, 30);
 
         bPlayClient = new JButton("Play (client)");
