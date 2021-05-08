@@ -7,7 +7,7 @@ public class GameModel {
 
     protected Player[] playerList;
     protected Wall[] wallList;
-    protected Player[] currPlayer;
+    protected Player curPlayer;
 
     protected Boolean movePlayer(Player player, Point newPos) {
         return true;
