@@ -10,19 +10,6 @@ public class Main {
     public static void main(String[] args) {
         GUI gameGUI = new GUI();
         gameGUI.drawMenu();
-        
-        SwingUtilities.invokeLater(() -> {
-            JFrame f = new JFrame();//creating instance of JFrame
-
-            f.setSize(900, 600);//400 width and 500 height
-            var panel = new GUI();
-            panel.setBackground(Color.WHITE);
-            f.getContentPane().add(panel, BorderLayout.CENTER);
-
-            f.setVisible(true);//making the frame visible
-            f.setResizable(false);
-            f.setLocationRelativeTo(null);
-        });
 
         GameTRX g = GameTRX.getInstance();
         g.setNetworkEvent(new GameTRX.NetworkEvent() {
