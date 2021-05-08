@@ -19,7 +19,7 @@ public class GameModel {
     protected void calcPossiblePlayerPos() {
     }
     protected Boolean isGameFinished() {
-        if () {
+        if (false) {
 
             return true;
         } else {
