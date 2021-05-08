@@ -1,7 +1,17 @@
 package hu.zpb.quoridor.network;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import hu.zpb.quoridor.data.GameModel;
+
 import java.io.*;
 import java.net.*;
+import com.google.gson.Gson;
+
+/*  TODO **
+* memory leak megszüntetése a createServe(), createClient() függvényeknél
+* hibakezelés magasabb szintre
+ */
 
 public class GameTRX extends Thread{
     public enum GameTRXType{
@@ -13,10 +23,11 @@ public class GameTRX extends Thread{
     private GameTRXType type;
     private ServerSocket serverSocket;
     private SocketThread socketThread;
+    private Gson gson;
 
     /* -- CALLBACK START -- */
     public interface NetworkEvent {
-        public void networkEventCallback(String data);
+        public void networkEventCallback(GameModel data);
     }
     private NetworkEvent networkEvent;
 
@@ -29,10 +40,14 @@ public class GameTRX extends Thread{
 
             instance.networkEvent = new NetworkEvent() { // hogy biztosan ne legyen nullpointer a callback
                 @Override
-                public void networkEventCallback(String data) {
+                public void networkEventCallback(GameModel data) {
                     ;
                 }
             };
+
+            GsonBuilder builder = new GsonBuilder();
+            builder.serializeNulls();
+            instance.gson = builder.create();
 
             // ip lekérdezése
             instance.myPublicIPv4 = instance.getIpV4();
@@ -52,7 +67,7 @@ public class GameTRX extends Thread{
         else{
             instance.networkEvent = new NetworkEvent() { // hogy biztosan ne legyen nullpointer a callback
                 @Override
-                public void networkEventCallback(String data) {
+                public void networkEventCallback(GameModel data) {
                     ;
                 }
             };
@@ -138,15 +153,38 @@ public class GameTRX extends Thread{
             @Override
             public void onReceived(String data) {
                 System.out.println("GameTRX received: " + data);
-                networkEvent.networkEventCallback(data);
+
+                String splitData[] = data.split("#", 2);
+                if(splitData.length != 2){
+                    return; // nem kaptunk elég adatot, kilépünk
+                }
+
+                switch(splitData[0])
+                {
+                    case "GameModel":
+                        try {
+                            GameModel gm = gson.fromJson(splitData[1], GameModel.class);
+                            networkEvent.networkEventCallback(gm);
+                        } catch (JsonSyntaxException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+
+                    default:
+                        break;
+
+                }
+
             }
         });
         socketThread.start();
     }
 
-    public void sendGameEvent(String data)
+    public void sendGameEvent(GameModel data)
     {
-        socketThread.send(data);
+        String msg = "GameModel#";
+        msg += gson.toJson(data, GameModel.class);
+        socketThread.send(msg);
     }
 
     public void run() {

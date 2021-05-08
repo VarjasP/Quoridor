@@ -10,7 +10,7 @@ public class SocketThread extends Thread{
 
     /* -- CALLBACK  -- */
     public interface SocketThreadCb {
-        public void onReceived(String data) ;
+        public void onReceived(String data);
     }
     private SocketThreadCb cb;
 
