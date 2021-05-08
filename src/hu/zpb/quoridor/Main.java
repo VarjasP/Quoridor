@@ -17,14 +17,16 @@ public class Main {
         f.setLayout(null);//using no layout managers
         f.setVisible(true);//making the frame visible
 
-        GameTRX g = new GameTRX(GameTRX.GameTRXType.CLIENT);
+        GameTRX g = GameTRX.getInstance();
         g.setNetworkEvent(new GameTRX.NetworkEvent() {
             @Override
             public void networkEventCallback(String data) {
 //                g.sendGameEvent(data.toUpperCase());
             }
         });
-
+        g.createClient();
         g.sendGameEvent("game event");
+
+//        g.createServer();
     }
 }

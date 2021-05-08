@@ -8,7 +8,9 @@ public class GameTRX extends Thread{
         SERVER, CLIENT
     }
 
-    GameTRXType type;
+    private static GameTRX instance;
+    private static Inet4Address myPublicIPv4 = null;
+    private GameTRXType type;
     private ServerSocket serverSocket;
     private SocketThread socketThread;
 
@@ -18,59 +20,120 @@ public class GameTRX extends Thread{
     }
     private NetworkEvent networkEvent;
 
-    public GameTRX(GameTRXType type) {
-        init();
-        this.type = type;
+    private GameTRX(){
+    }
 
-        switch(type)
-        {
-            case SERVER:
-                try {
+    public static GameTRX getInstance() {
+        if(instance == null) {
+            instance = new GameTRX();
 
-                    serverSocket = new ServerSocket(9090);
-                    System.out.println("Server is listening on " + serverSocket.toString());
-                    this.start();
-
-                } catch (IOException ex) {
-
-                    System.out.println("Server exception: " + ex.getMessage());
-                    ex.printStackTrace();
-
+            instance.networkEvent = new NetworkEvent() { // hogy biztosan ne legyen nullpointer a callback
+                @Override
+                public void networkEventCallback(String data) {
+                    ;
                 }
-                break;
-            case CLIENT:
-                try{
+            };
 
-                    Socket socket = new Socket("localhost", 9090);
-                    this.addSocket(socket);
-
-                } catch (UnknownHostException ex) {
-
-                    System.out.println("Server not found: " + ex.getMessage());
-
-                } catch (IOException ex) {
-
-                    System.out.println("I/O error: " + ex.getMessage());
-
-                }
-                break;
-            default:
-                break;
+            // ip lekérdezése
+            try {
+                myPublicIPv4 = (Inet4Address) InetAddress.getByName("192.168.1.68"/*getIpV4()*/);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
         }
+
+        return instance;
+    }
+
+    public static Inet4Address getMyIP() {
+        return myPublicIPv4;
     }
 
     public void setNetworkEvent(NetworkEvent networkEvent) {
-        this.networkEvent = networkEvent;
+        if (networkEvent != null) {
+            this.networkEvent = networkEvent;
+        }
+        else{
+            instance.networkEvent = new NetworkEvent() { // hogy biztosan ne legyen nullpointer a callback
+                @Override
+                public void networkEventCallback(String data) {
+                    ;
+                }
+            };
+        }
     }
 
-    // dummy fuggveny, hogy biztosan ne legyen nullpointer a callback
-    private void init(){
-        this.networkEvent = new NetworkEvent() {
-            @Override
-            public void networkEventCallback(String data) {
-                ;
+    public void createServer()
+    {
+        this.createServer(51247);
+    }
+
+    public void createServer(int port)
+    {
+        this.type = GameTRXType.SERVER;
+        try {
+            serverSocket = new ServerSocket(port,1/*, address*/);
+            System.out.println("Server is listening on " + serverSocket.toString());
+            this.start();  // új szálon figyeljük a csatlakozásokat
+        }
+        catch (IOException ex) {
+            System.out.println("Server exception: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    public void createClient()
+    {
+        this.createClient("localhost", 52147);
+    }
+
+    public void createClient(int port)
+    {
+        this.createClient("localhost", port);
+    }
+
+    public void createClient(String address, int port)
+    {
+        this.type = GameTRXType.CLIENT;
+        try{
+            Socket socket = new Socket(address, port);
+            this.addSocket(socket);
+        }
+        catch (UnknownHostException ex) {
+            System.out.println("Server not found: " + ex.getMessage());
+        }
+        catch (IOException ex) {
+            System.out.println("I/O error: " + ex.getMessage());
+        }
+    }
+
+    private static String getIpV4(){
+        URL url = null;
+        BufferedReader in = null;
+        String ip = "0.0.0.0";
+        try {
+            url = new URL("http://checkip.amazonaws.com");
+            in = new BufferedReader(new InputStreamReader(
+                    url.openStream()));
+            ip = in.readLine();
+            return ip;
+        }
+        catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        };
+        }
+        return ip;
     }
 
     private void addSocket(Socket socket) {
@@ -78,7 +141,7 @@ public class GameTRX extends Thread{
         socketThread.setCb(new SocketThread.SocketThreadCb() {
             @Override
             public void onReceived(String data) {
-                System.out.println("Received: " + data);
+                System.out.println("GameTRX received: " + data);
                 networkEvent.networkEventCallback(data);
             }
         });
@@ -94,16 +157,14 @@ public class GameTRX extends Thread{
         // szerver eseteben figyeljuk a csatlakozasokat
 //        while (true) {
             try {
-
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
                 this.addSocket(socket);
 
-            } catch (IOException ex){
-
+            }
+            catch (IOException ex){
                 System.out.println("Server exception: " + ex.getMessage());
                 ex.printStackTrace();
-
             }
 //        }
     }
