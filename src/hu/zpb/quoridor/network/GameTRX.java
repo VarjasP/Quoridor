@@ -9,7 +9,7 @@ public class GameTRX extends Thread{
     }
 
     private static GameTRX instance;
-    private static Inet4Address myPublicIPv4 = null;
+    private String myPublicIPv4 = "0.0.0.0";
     private GameTRXType type;
     private ServerSocket serverSocket;
     private SocketThread socketThread;
@@ -35,17 +35,13 @@ public class GameTRX extends Thread{
             };
 
             // ip lekérdezése
-            try {
-                myPublicIPv4 = (Inet4Address) InetAddress.getByName("192.168.1.68"/*getIpV4()*/);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
+            instance.myPublicIPv4 = instance.getIpV4();
         }
 
         return instance;
     }
 
-    public static Inet4Address getMyIP() {
+    public String getMyIP() {
         return myPublicIPv4;
     }
 
@@ -107,7 +103,7 @@ public class GameTRX extends Thread{
         }
     }
 
-    private static String getIpV4(){
+    private String getIpV4(){
         URL url = null;
         BufferedReader in = null;
         String ip = "0.0.0.0";
