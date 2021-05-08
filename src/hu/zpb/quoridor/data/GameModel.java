@@ -18,14 +18,14 @@ public class GameModel {
 
     protected void calcPossiblePlayerPos() {
     }
-    protected Boolean isGameFinished() {
-        if () {
-
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    protected Boolean isGameFinished() {
+//        if () {
+//
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
     protected void makeMove() {
     }
