@@ -19,8 +19,8 @@ public class Player extends MovableObject{
         this.ID = ID;
         this.name = name;
         this.availableWalls = availableWalls;
-
-
     }
+
+
 
 }

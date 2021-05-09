@@ -1,5 +1,6 @@
 package hu.zpb.quoridor.model;
 
+import hu.zpb.quoridor.data.GameModelData;
 import hu.zpb.quoridor.view.GUI;
 import hu.zpb.quoridor.data.Player;
 import hu.zpb.quoridor.data.Wall;
@@ -9,24 +10,15 @@ import java.awt.*;
 public class GameModel {
     /* TODO: gamespace? */
 
-    protected int dummy;
-
-    public int getDummy() {
-        return dummy;
-    }
-
-    public void setDummy(int dummy) {
-        this.dummy = dummy;
-    }
-
-    protected Player[] playerList;
-    protected Wall[] wallList;
-    protected Player curPlayer;
-
+    protected GameModelData gmd;
     protected GUI gui;
 
     public void setGui(GUI gui) {
         this.gui = gui;
+    }
+
+    public GameModelData getGameModelData() {
+        return gmd;
     }
 
     protected Boolean movePlayer(Player player, Point newPos) {
@@ -38,9 +30,9 @@ public class GameModel {
 
     // Pista teszt konstruktor
     public GameModel() {
-        this.playerList = new Player[2];
-        playerList[0] = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
-        this.wallList = new Wall[20];
+        gmd = new GameModelData();
+        gmd.getPlayerList()[0] = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
+        System.out.println("Szevasz Pista");
 //        this.curPlayer = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
     }
 
@@ -57,13 +49,13 @@ public class GameModel {
 
     protected void makeMove() {
     }
-    public void updateGame(GameModel newData) {
-
+    public void updateGame(GameModelData newData) {
+        gmd = newData;
         gui.drawGame();
     }
 
     public void addPlayer(Player newPlayer) {
-        playerList[1] = newPlayer;
+        gmd.getPlayerList()[1] = newPlayer;
 //        TODO: random curPlayer
     }
 

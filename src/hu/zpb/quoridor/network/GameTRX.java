@@ -7,7 +7,7 @@ import hu.zpb.quoridor.data.*;
 import java.io.*;
 import java.net.*;
 import com.google.gson.Gson;
-import hu.zpb.quoridor.model.GameModel;
+import hu.zpb.quoridor.model.*;
 
 /*  TODO **
 * memory leak megszüntetése a createServe(), createClient() függvényeknél
@@ -28,7 +28,7 @@ public class GameTRX extends Thread{
 
     /* -- CALLBACK START -- */
     public interface NetworkEvent {
-        public void networkEventCallback(GameModel data);
+        public void networkEventCallback(GameModelData data);
         public void playerJoined(Player player);
     }
     private NetworkEvent networkEvent;
@@ -42,7 +42,7 @@ public class GameTRX extends Thread{
 
             instance.networkEvent = new NetworkEvent() { // hogy biztosan ne legyen nullpointer a callback
                 @Override
-                public void networkEventCallback(GameModel data) {
+                public void networkEventCallback(GameModelData data) {
                     ;
                 }
 
@@ -74,7 +74,7 @@ public class GameTRX extends Thread{
         else{
             instance.networkEvent = new NetworkEvent() { // hogy biztosan ne legyen nullpointer a callback
                 @Override
-                public void networkEventCallback(GameModel data) {
+                public void networkEventCallback(GameModelData data) {
                     ;
                 }
 
@@ -175,7 +175,7 @@ public class GameTRX extends Thread{
                 {
                     case "GameModel":
                         try {
-                            GameModel gm = gson.fromJson(splitData[1], GameModel.class);
+                            GameModelData gm = gson.fromJson(splitData[1], GameModelData.class);
                             networkEvent.networkEventCallback(gm);
                         } catch (JsonSyntaxException e) {
                             e.printStackTrace();
@@ -197,10 +197,10 @@ public class GameTRX extends Thread{
         socketThread.start();
     }
 
-    public void sendGameEvent(GameModel data)
+    public void sendGameEvent(GameModelData data)
     {
         String msg = "GameModel#";
-        msg += gson.toJson(data, GameModel.class);
+        msg += gson.toJson(data, GameModelData.class);
         socketThread.send(msg);
     }
 
