@@ -26,28 +26,47 @@ public class GUI extends JComponent implements ActionListener {
     private int portNumber;
 
     private JFrame gameFrame;
+    private DrawCanvas gameCanvas;
+    private DrawCanvas statusCanvas;
+
+    private JButton bGiveUp;
 
     private GameModel gm;
 
-
+    public GUI() {
+        gameFrame = new JFrame(); //creating instance of JFrame
+        gameCanvas = new DrawCanvas();
+    }
 
     public void setGm(GameModel gm) {
         this.gm = gm;
     }
 
     public void drawGame() {
-        JFrame f = new JFrame();//creating instance of JFrame
+        gameFrame.setSize(900, 600);
+        gameCanvas.setBounds(0,0,600,600);
+        gameCanvas.setBackground(Color.WHITE);
+        gameFrame.getContentPane().add(gameCanvas, BorderLayout.CENTER);
+        gameFrame.repaint();
 
-        f.setSize(900, 600);//400 width and 500 height
-        var panel = this;
-        panel.setBackground(Color.WHITE);
-        f.getContentPane().add(panel, BorderLayout.CENTER);
-        f.repaint();
+        JPanel statusBar = new JPanel();
+        statusBar.setBounds(600,0,300,600);
+        JLabel text = new JLabel("Mi van itt és hol?");
+        text.setBounds(100, 80, 100, 30);
+        statusBar.add(text);
 
-        f.setVisible(true);//making the frame visible
-        f.setResizable(false);
-        f.setLocationRelativeTo(null);
+        bGiveUp = new JButton("Give up");
+        bGiveUp.setBounds(110, 160, 80, 30);
+        bGiveUp.addActionListener(this);
+        statusBar.add(bGiveUp);
 
+        statusBar.setLayout(null);
+        gameFrame.add(statusBar);
+        gameFrame.setLayout(null);
+
+        gameFrame.setVisible(true);//making the frame visible
+        gameFrame.setResizable(false);
+        gameFrame.setLocationRelativeTo(null);
     }
 
     public void drawMenu() {
@@ -175,23 +194,26 @@ public class GUI extends JComponent implements ActionListener {
         }
     }
 
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        int gridSize = 60;
-        int wallSize = 5;
-        int rectSize = gridSize-2*wallSize;
+    class DrawCanvas extends JPanel {
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            int gridSize = 60;
+            int wallSize = 5;
+            int rectSize = gridSize-2*wallSize;
 
-        for (int i=0; i<=8; i++) {
-            for (int j=0; j<=8; j++) {
-                g.setColor(Color.RED);
-                g.fillRect(i*gridSize+wallSize, j*gridSize+wallSize, rectSize, rectSize);
+            for (int i=0; i<=8; i++) {
+                for (int j=0; j<=8; j++) {
+                    g.setColor(Color.RED);
+                    g.fillRect(i*gridSize+wallSize, j*gridSize+wallSize, rectSize, rectSize);
+                }
             }
-        }
-        for (int i=0; i<2; i++) {
-            if (gm.getGameModelData().getPlayerList()[i] != null) {
-                g.setColor(gm.getGameModelData().getPlayerList()[i].getColor());
-                g.fillOval(gm.getGameModelData().getPlayerList()[i].getActualPosition().x*gridSize+wallSize+rectSize/4,
-                        gm.getGameModelData().getPlayerList()[i].getActualPosition().y*gridSize+wallSize+rectSize/4, 25,25);
+            for (int i=0; i<2; i++) {
+                if (gm.getGameModelData().getPlayerList()[i] != null) {
+                    g.setColor(gm.getGameModelData().getPlayerList()[i].getColor());
+                    g.fillOval(gm.getGameModelData().getPlayerList()[i].getActualPosition().x*gridSize+wallSize+rectSize/4,
+                            gm.getGameModelData().getPlayerList()[i].getActualPosition().y*gridSize+wallSize+rectSize/4, 25,25);
+                }
             }
         }
     }
