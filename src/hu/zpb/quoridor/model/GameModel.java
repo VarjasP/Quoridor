@@ -1,6 +1,7 @@
 package hu.zpb.quoridor.model;
 
 import hu.zpb.quoridor.data.GameModelData;
+import hu.zpb.quoridor.network.GameTRX;
 import hu.zpb.quoridor.view.GUI;
 import hu.zpb.quoridor.data.Player;
 import hu.zpb.quoridor.data.Wall;
@@ -34,7 +35,20 @@ public class GameModel {
         gmd.getPlayerList()[0] = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
         System.out.println("Szevasz Pista");
 //        this.curPlayer = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
+
+        GameTRX.getInstance().setNetworkEvent(new GameTRX.NetworkEvent() {
+            @Override
+            public void networkEventCallback(GameModelData data) {
+                updateGame(data);
+            }
+
+            @Override
+            public void playerJoined(Player player) {
+
+            }
+        });
     }
+
 
     protected void calcPossiblePlayerPos() {
     }
@@ -48,6 +62,8 @@ public class GameModel {
     }
 
     protected void makeMove() {
+
+        GameTRX.getInstance().sendGameEvent(gmd);
     }
     public void updateGame(GameModelData newData) {
         gmd = newData;
