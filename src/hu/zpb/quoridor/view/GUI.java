@@ -7,8 +7,12 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class GUI extends JComponent implements ActionListener {
+import static java.lang.Math.round;
+
+public class GUI extends JComponent implements ActionListener, MouseListener {
 
     private JFrame menuFrame;
     private JButton bSelectColor;
@@ -46,6 +50,7 @@ public class GUI extends JComponent implements ActionListener {
         gameFrame.setSize(900, 600);
         gameCanvas.setBounds(0,0,600,600);
         gameCanvas.setBackground(Color.WHITE);
+        gameCanvas.addMouseListener(this);
         gameFrame.getContentPane().add(gameCanvas, BorderLayout.CENTER);
         gameFrame.repaint();
 
@@ -67,6 +72,10 @@ public class GUI extends JComponent implements ActionListener {
         gameFrame.setVisible(true);//making the frame visible
         gameFrame.setResizable(false);
         gameFrame.setLocationRelativeTo(null);
+    }
+
+    public void refreshGame(){
+        gameFrame.repaint();
     }
 
     public void drawMenu() {
@@ -194,6 +203,34 @@ public class GUI extends JComponent implements ActionListener {
         }
     }
 
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        int x=e.getX();
+        int y=e.getY();
+        int xcoord = round(x / 60);
+        int ycoord = round(y/ 60);
+        System.out.println(xcoord);
+        gm.getGameModelData().getPlayerList()[0].setActualPosition(new Point(xcoord,ycoord));
+        refreshGame();
+        GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
+
     class DrawCanvas extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
@@ -208,6 +245,7 @@ public class GUI extends JComponent implements ActionListener {
                     g.fillRect(i*gridSize+wallSize, j*gridSize+wallSize, rectSize, rectSize);
                 }
             }
+            int dummy = 1;
             for (int i=0; i<2; i++) {
                 if (gm.getGameModelData().getPlayerList()[i] != null) {
                     g.setColor(gm.getGameModelData().getPlayerList()[i].getColor());
