@@ -34,18 +34,18 @@ public class GUI extends JPanel implements ActionListener {
     }
 
     public void drawGame() {
-        SwingUtilities.invokeLater(() -> {
-            JFrame f = new JFrame();//creating instance of JFrame
+        JFrame f = new JFrame();//creating instance of JFrame
 
-            f.setSize(900, 600);//400 width and 500 height
-            var panel = new GUI();
-            panel.setBackground(Color.WHITE);
-            f.getContentPane().add(panel, BorderLayout.CENTER);
+        f.setSize(900, 600);//400 width and 500 height
+        var panel = this;
+        panel.setBackground(Color.WHITE);
+        f.getContentPane().add(panel, BorderLayout.CENTER);
+        f.repaint();
 
-            f.setVisible(true);//making the frame visible
-            f.setResizable(false);
-            f.setLocationRelativeTo(null);
-        });
+        f.setVisible(true);//making the frame visible
+        f.setResizable(false);
+        f.setLocationRelativeTo(null);
+
     }
 
     public void drawMenu() {
