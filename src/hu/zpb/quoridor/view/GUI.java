@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GUI extends JPanel implements ActionListener {
+public class GUI extends JComponent implements ActionListener {
 
     private JFrame menuFrame;
     private JButton bSelectColor;
@@ -24,6 +24,8 @@ public class GUI extends JPanel implements ActionListener {
     private Color playerColor;
     private String ipAddress;
     private int portNumber;
+
+    private JFrame gameFrame;
 
     private GameModel gm;
 
