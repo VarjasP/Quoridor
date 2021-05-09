@@ -16,6 +16,7 @@ public class SocketThread extends Thread{
 
     public SocketThread(Socket socket) {
         this.socket = socket;
+        this.setDaemon(true); // nem fogja életben tartani a szálat, ha minden user szál elhalt
         try {
             rx = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             tx = new PrintWriter(socket.getOutputStream(), true);

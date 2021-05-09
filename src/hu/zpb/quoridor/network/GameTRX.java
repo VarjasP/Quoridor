@@ -40,6 +40,8 @@ public class GameTRX extends Thread{
         if(instance == null) {
             instance = new GameTRX();
 
+            instance.setDaemon(true); // nem fogja életben tartani a szálat, ha minden user szál elhalt
+
             instance.networkEvent = new NetworkEvent() { // hogy biztosan ne legyen nullpointer a callback
                 @Override
                 public void networkEventCallback(GameModelData data) {
@@ -215,7 +217,7 @@ public class GameTRX extends Thread{
 
     public void run() {
         // szerver eseteben figyeljuk a csatlakozasokat
-//        while (true) {
+        while (true) {
             try {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
@@ -226,6 +228,6 @@ public class GameTRX extends Thread{
                 System.out.println("Server exception: " + ex.getMessage());
                 ex.printStackTrace();
             }
-//        }
+        }
     }
 }
