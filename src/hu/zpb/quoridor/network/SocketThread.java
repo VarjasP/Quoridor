@@ -42,19 +42,30 @@ public class SocketThread extends Thread{
         tx.println(data);
     }
 
+    public void closeConnection(){
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // rx
     public void run() {
-        try {
-            String text;
+        System.out.println("Socket thread run");
+        while (!socket.isClosed()) {
+            try {
+                String text;
 
-            while(true) {
                 text = rx.readLine();
                 cb.onReceived(text);
-            }
 
-        } catch (IOException ex) {
-            System.out.println("Socket IO exception: " + ex.getMessage());
-            ex.printStackTrace();
+            } catch (IOException ex) {
+                System.out.println("Socket IO exception: " + ex.getMessage());
+                ex.printStackTrace();
+                this.closeConnection();
+            }
         }
+        System.out.println("Socket thread closed");
     }
 }

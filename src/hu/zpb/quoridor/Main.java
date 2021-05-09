@@ -16,38 +16,41 @@ public class Main {
         gameGUI.setGm(gameGM);
         gameGM.setGui(gameGUI);
 
-//        gameGUI.drawMenu();
+        gameGUI.drawMenu();
 
 
 
         GameTRX gameTRX = GameTRX.getInstance();
-//        gameTRX.createServer();
+        System.out.print(gameTRX.getMyIP());
+
+
+        // szerver callback in menu
         gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
             @Override
             public void networkEventCallback(GameModelData data) {
-                System.out.println("GameModel érkezett");
-                gameGM.updateGame(data);
             }
 
             @Override
             public void playerJoined(Player player) {
-                System.out.println("Player érkezett");
                 gameGM.addPlayer(player);
                 gameTRX.sendGameEvent(gameGM.getGameModelData());
+                // TODO: start game gui
             }
         });
-        System.out.print(gameTRX.getMyIP());
+        gameTRX.createServer();
 
-
-
-        gameTRX.createClient("188.156.188.252", 51247);
-        gameTRX.joinPlayer(new Player(new Point(4,0), Color.BLACK, 1, "én", 10));
-        gameTRX.sendGameEvent(gameGM.getGameModelData());
+        // client callback in menu
+//        gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
+//            @Override
+//            public void networkEventCallback(GameModelData data) {
+//                // TODO: start game gui
+//            }
 //
-//        gameTRX.createClient();
-//        gameTRX.joinPlayer(new Player(new Point(4,0), Color.BLUE, 1, "rattyer", 10));
-//        gameTRX.createClient();
-//        gameTRX.joinPlayer(new Player(new Point(4,0), Color.RED, 1, "géza", 10));
-//        gameTRX.sendGameEvent(gameGM.getGameModelData());
+//            @Override
+//            public void playerJoined(Player player) {
+//            }
+//        });
+//        gameTRX.createClient("188.156.188.252", 51247);
+//        gameTRX.joinPlayer(new Player(new Point(4,0), Color.BLACK, 1, "géza", 10));
     }
 }

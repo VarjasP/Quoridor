@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import hu.zpb.quoridor.model.*;
 
 /*  TODO **
-* memory leak megszüntetése a createServe(), createClient() függvényeknél
+* crateServer() többször is hívható legyen
 * hibakezelés magasabb szintre
  */
 
@@ -95,6 +95,7 @@ public class GameTRX extends Thread{
 
     public void createServer(int port)
     {
+        this.closeConnection(); // close previos connection
         this.type = GameTRXType.SERVER;
         try {
             serverSocket = new ServerSocket(port,1/*, address*/);
@@ -119,6 +120,7 @@ public class GameTRX extends Thread{
 
     public void createClient(String address, int port)
     {
+        this.closeConnection(); // close previos connection
         this.type = GameTRXType.CLIENT;
         try{
             Socket socket = new Socket(address, port);
@@ -129,6 +131,22 @@ public class GameTRX extends Thread{
         }
         catch (IOException ex) {
             System.out.println("I/O error: " + ex.getMessage());
+        }
+    }
+
+    public void closeConnection()
+    {
+        if(socketThread != null) {
+            socketThread.closeConnection();
+        }
+
+        if(serverSocket != null) {
+            try {
+                serverSocket.close();
+                this.join();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -217,17 +235,17 @@ public class GameTRX extends Thread{
 
     public void run() {
         // szerver eseteben figyeljuk a csatlakozasokat
-        while (true) {
+        while (!serverSocket.isClosed()) {
             try {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
                 this.addSocket(socket);
-
             }
             catch (IOException ex){
                 System.out.println("Server exception: " + ex.getMessage());
                 ex.printStackTrace();
             }
         }
+        System.out.println("Server socket closed");
     }
 }
