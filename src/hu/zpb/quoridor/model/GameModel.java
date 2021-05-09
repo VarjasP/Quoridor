@@ -1,4 +1,8 @@
-package hu.zpb.quoridor.data;
+package hu.zpb.quoridor.model;
+
+import hu.zpb.quoridor.view.GUI;
+import hu.zpb.quoridor.data.Player;
+import hu.zpb.quoridor.data.Wall;
 
 import java.awt.*;
 
@@ -23,10 +27,6 @@ public class GameModel {
 
     public void setGui(GUI gui) {
         this.gui = gui;
-    }
-
-    public int getGUIdummy() {
-        return gui.getDummy();
     }
 
     protected Boolean movePlayer(Player player, Point newPos) {

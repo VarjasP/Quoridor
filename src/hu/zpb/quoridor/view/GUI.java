@@ -1,5 +1,7 @@
-package hu.zpb.quoridor.data;
+package hu.zpb.quoridor.view;
 
+import hu.zpb.quoridor.data.Player;
+import hu.zpb.quoridor.model.GameModel;
 import hu.zpb.quoridor.network.GameTRX;
 
 import java.awt.*;
@@ -8,16 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GUI extends JPanel implements ActionListener {
-
-    protected int dummy;
-
-    public int getDummy() {
-        return dummy;
-    }
-
-    public void setDummy(int dummy) {
-        this.dummy = dummy;
-    }
 
     private JFrame menuFrame;
     private JButton bSelectColor;
@@ -190,11 +182,11 @@ public class GUI extends JPanel implements ActionListener {
         int wallSize = 5;
         int rectSize = gridSize-2*wallSize;
 
-        Player[] pls = new Player[2];
-        Point p1 = new Point(0,5);
-        Point p2 = new Point(8,5);
-        pls[0] = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
-        pls[1] = new Player(new Point(4,8), Color.WHITE, 1, "te", 10);
+//        Player[] pls = new Player[2];
+//        Point p1 = new Point(0,5);
+//        Point p2 = new Point(8,5);
+//        pls[0] = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
+//        pls[1] = new Player(new Point(4,8), Color.WHITE, 1, "te", 10);
 //        GameModel gm = new GameModel()
 
         for (int i=0; i<=8; i++) {
@@ -203,9 +195,9 @@ public class GUI extends JPanel implements ActionListener {
                 g.fillRect(i*gridSize+wallSize, j*gridSize+wallSize, rectSize, rectSize);
             }
         }
-        g.setColor(pls[0].color);
-        g.fillOval(pls[0].actualPosition.x*gridSize+wallSize+rectSize/4, pls[0].actualPosition.y*gridSize+wallSize+rectSize/4, 25,25);
-        g.setColor(pls[1].color);
-        g.fillOval(pls[1].actualPosition.x*gridSize+wallSize+rectSize/4, pls[1].actualPosition.y*gridSize+wallSize+rectSize/4, 25,25);
+//        g.setColor(pls[0].color);
+//        g.fillOval(pls[0].actualPosition.x*gridSize+wallSize+rectSize/4, pls[0].actualPosition.y*gridSize+wallSize+rectSize/4, 25,25);
+//        g.setColor(pls[1].color);
+//        g.fillOval(pls[1].actualPosition.x*gridSize+wallSize+rectSize/4, pls[1].actualPosition.y*gridSize+wallSize+rectSize/4, 25,25);
     }
 }

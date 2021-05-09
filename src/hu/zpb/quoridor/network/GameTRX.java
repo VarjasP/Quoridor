@@ -7,6 +7,7 @@ import hu.zpb.quoridor.data.*;
 import java.io.*;
 import java.net.*;
 import com.google.gson.Gson;
+import hu.zpb.quoridor.model.GameModel;
 
 /*  TODO **
 * memory leak megszüntetése a createServe(), createClient() függvényeknél

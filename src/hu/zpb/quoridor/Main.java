@@ -1,9 +1,10 @@
 package hu.zpb.quoridor;
 
 import hu.zpb.quoridor.data.*;
+import hu.zpb.quoridor.model.GameModel;
 import hu.zpb.quoridor.network.GameTRX;
+import hu.zpb.quoridor.view.GUI;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class Main {
