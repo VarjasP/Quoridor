@@ -59,8 +59,12 @@ public class GameModel {
     }
     public void updateGame(GameModel newData) {
 
-
         gui.drawGame();
+    }
+
+    public void addPlayer(Player newPlayer) {
+        playerList[1] = newPlayer;
+//        TODO: random curPlayer
     }
 
 
