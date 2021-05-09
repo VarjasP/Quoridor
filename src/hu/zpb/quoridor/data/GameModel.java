@@ -5,9 +5,29 @@ import java.awt.*;
 public class GameModel {
     /* TODO: gamespace? */
 
+    protected int dummy;
+
+    public int getDummy() {
+        return dummy;
+    }
+
+    public void setDummy(int dummy) {
+        this.dummy = dummy;
+    }
+
     protected Player[] playerList;
     protected Wall[] wallList;
     protected Player curPlayer;
+
+    protected GUI gui;
+
+    public void setGui(GUI gui) {
+        this.gui = gui;
+    }
+
+    public int getGUIdummy() {
+        return gui.getDummy();
+    }
 
     protected Boolean movePlayer(Player player, Point newPos) {
         return true;
@@ -19,8 +39,9 @@ public class GameModel {
     // Pista teszt konstruktor
     public GameModel() {
         this.playerList = new Player[2];
+        playerList[0] = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
         this.wallList = new Wall[20];
-        this.curPlayer = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
+//        this.curPlayer = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
     }
 
     protected void calcPossiblePlayerPos() {
@@ -36,7 +57,10 @@ public class GameModel {
 
     protected void makeMove() {
     }
-    protected void updateGame() {
+    public void updateGame(GameModel newData) {
+
+
+        gui.drawGame();
     }
 
 

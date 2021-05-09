@@ -9,6 +9,16 @@ import java.awt.event.ActionListener;
 
 public class GUI extends JPanel implements ActionListener {
 
+    protected int dummy;
+
+    public int getDummy() {
+        return dummy;
+    }
+
+    public void setDummy(int dummy) {
+        this.dummy = dummy;
+    }
+
     private JFrame menuFrame;
     private JButton bSelectColor;
     private JButton bPlayServer;
@@ -23,6 +33,16 @@ public class GUI extends JPanel implements ActionListener {
     private Color playerColor;
     private String ipAddress;
     private int portNumber;
+
+    private GameModel gm;
+
+    public void setGm(GameModel gm) {
+        this.gm = gm;
+    }
+
+    public int getGMdummy(){
+        return gm.getDummy();
+    }
 
     public void drawGame() {
         SwingUtilities.invokeLater(() -> {
