@@ -2,7 +2,7 @@ package hu.zpb.quoridor.network;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import hu.zpb.quoridor.data.GameModel;
+import hu.zpb.quoridor.data.*;
 
 import java.io.*;
 import java.net.*;
@@ -28,6 +28,7 @@ public class GameTRX extends Thread{
     /* -- CALLBACK START -- */
     public interface NetworkEvent {
         public void networkEventCallback(GameModel data);
+        public void playerJoined(Player player);
     }
     private NetworkEvent networkEvent;
 
@@ -41,6 +42,11 @@ public class GameTRX extends Thread{
             instance.networkEvent = new NetworkEvent() { // hogy biztosan ne legyen nullpointer a callback
                 @Override
                 public void networkEventCallback(GameModel data) {
+                    ;
+                }
+
+                @Override
+                public void playerJoined(Player player) {
                     ;
                 }
             };
@@ -68,6 +74,11 @@ public class GameTRX extends Thread{
             instance.networkEvent = new NetworkEvent() { // hogy biztosan ne legyen nullpointer a callback
                 @Override
                 public void networkEventCallback(GameModel data) {
+                    ;
+                }
+
+                @Override
+                public void playerJoined(Player player) {
                     ;
                 }
             };
@@ -169,10 +180,15 @@ public class GameTRX extends Thread{
                             e.printStackTrace();
                         }
                         break;
-
+                    case "JoinPlayer":
+                        try {
+                            Player p = gson.fromJson(splitData[1], Player.class);
+                            networkEvent.playerJoined(p);
+                        } catch (JsonSyntaxException e) {
+                            e.printStackTrace();
+                        }
                     default:
                         break;
-
                 }
 
             }
@@ -185,6 +201,15 @@ public class GameTRX extends Thread{
         String msg = "GameModel#";
         msg += gson.toJson(data, GameModel.class);
         socketThread.send(msg);
+    }
+
+    public void joinPlayer(Player player)
+    {
+        if(GameTRX.getInstance().type == GameTRXType.CLIENT) {
+            String msg = "JoinPlayer#";
+            msg += gson.toJson(player, Player.class);
+            socketThread.send(msg);
+        }
     }
 
     public void run() {
