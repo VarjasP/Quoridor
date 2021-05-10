@@ -49,7 +49,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     public void drawGame() {
         gameFrame.setSize(900, 600);
         gameCanvas.setBounds(0,0,600,600);
-        gameCanvas.setBackground(Color.WHITE);
+        gameCanvas.setBackground(Color.decode("#7f3327"));
         gameCanvas.addMouseListener(this);
         gameFrame.getContentPane().add(gameCanvas, BorderLayout.CENTER);
         gameFrame.repaint();
@@ -241,7 +241,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
 
             for (int i=0; i<=8; i++) {
                 for (int j=0; j<=8; j++) {
-                    g.setColor(Color.RED);
+                    g.setColor(Color.decode("#b74d23"));  // fal: #d78564
                     g.fillRect(i*gridSize+wallSize, j*gridSize+wallSize, rectSize, rectSize);
                 }
             }
