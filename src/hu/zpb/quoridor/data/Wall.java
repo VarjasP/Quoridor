@@ -3,19 +3,19 @@ package hu.zpb.quoridor.data;
 import java.awt.*;
 
 public final class Wall extends MovableObject{
-    private String orientation;
+    private Character orientation;
 
-    public Wall(Point position, Color color, String orientation) {
+    public Wall(Point position, Color color, Character orientation) {
         this.actualPosition = position;
         this.color = color;
         this.orientation = orientation;
     }
 
-    public String getOrientation() {
+    public Character getOrientation() {
         return orientation;
     }
 
-    public void setOrientation(String orientation) {
+    public void setOrientation(Character orientation) {
         this.orientation = orientation;
     }
 }

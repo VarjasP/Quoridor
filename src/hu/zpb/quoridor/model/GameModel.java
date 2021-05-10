@@ -33,6 +33,10 @@ public class GameModel {
     public GameModel() {
         gmd = new GameModelData();
         gmd.getPlayerList()[0] = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
+//        gmd.getWallList()[0] = new Wall(new Point (1,1), gui.getWallColor(), 'h');
+        Color clr = Color.decode("#d78564");
+        gmd.getWallList()[0] = new Wall(new Point (3,2), clr, 'h');
+        gmd.getWallList()[1] = new Wall(new Point (7,5), clr, 'v');
         System.out.println("Szevasz Pista");
 //        this.curPlayer = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
 

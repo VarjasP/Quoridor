@@ -1,5 +1,6 @@
 package hu.zpb.quoridor.view;
 
+import hu.zpb.quoridor.data.Wall;
 import hu.zpb.quoridor.model.*;
 import hu.zpb.quoridor.network.GameTRX;
 
@@ -36,18 +37,28 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     private JButton bGiveUp;
 
     private GameModel gm;
+    private Color wallColor;
+    private int gridSize = 60;
+    private int wallSize = 5;
+    private int rectSize = gridSize-2*wallSize;
+    private int playerSize = 30;
 
     public GUI() {
-        gameFrame = new JFrame(); //creating instance of JFrame
-        gameCanvas = new DrawCanvas();
+        wallColor = Color.decode("#d78564");
     }
 
     public void setGm(GameModel gm) {
         this.gm = gm;
     }
 
+    public Color getWallColor() {
+        return wallColor;
+    }
+
     public void drawGame() {
+        gameFrame = new JFrame(); //creating instance of JFrame
         gameFrame.setSize(900, 600);
+        gameCanvas = new DrawCanvas();
         gameCanvas.setBounds(0,0,600,600);
         gameCanvas.setBackground(Color.decode("#7f3327"));
         gameCanvas.addMouseListener(this);
@@ -217,7 +228,6 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         int y=e.getY();
         int xcoord = round(x / 60);
         int ycoord = round(y/ 60);
-        System.out.println(xcoord);
         gm.getGameModelData().getPlayerList()[0].setActualPosition(new Point(xcoord,ycoord));
         refreshGame();
         GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
@@ -235,24 +245,47 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            int gridSize = 60;
-            int wallSize = 5;
-            int rectSize = gridSize-2*wallSize;
 
+            // Draw board
             for (int i=0; i<=8; i++) {
                 for (int j=0; j<=8; j++) {
-                    g.setColor(Color.decode("#b74d23"));  // fal: #d78564
+                    g.setColor(Color.decode("#b74d23"));
                     g.fillRect(i*gridSize+wallSize, j*gridSize+wallSize, rectSize, rectSize);
                 }
             }
-            int dummy = 1;
+
+            // Draw players
             for (int i=0; i<2; i++) {
                 if (gm.getGameModelData().getPlayerList()[i] != null) {
                     g.setColor(gm.getGameModelData().getPlayerList()[i].getColor());
-                    g.fillOval(gm.getGameModelData().getPlayerList()[i].getActualPosition().x*gridSize+wallSize+rectSize/4,
-                            gm.getGameModelData().getPlayerList()[i].getActualPosition().y*gridSize+wallSize+rectSize/4, 25,25);
+                    g.fillOval(gm.getGameModelData().getPlayerList()[i].getActualPosition().x*gridSize+wallSize+rectSize/5,
+                            gm.getGameModelData().getPlayerList()[i].getActualPosition().y*gridSize+wallSize+rectSize/5, playerSize, playerSize);
+                }
+            }
+            // Draw walls
+            g.setColor(wallColor);
+            for (int i=0; i < getUsedLength(gm.getGameModelData().getWallList()); i++) {
+                Wall w = gm.getGameModelData().getWallList()[i];
+                Point gridP = new Point(w.getActualPosition().x, w.getActualPosition().y);
+                if (w.getOrientation() == 'h') {
+                    g.fillRect((gridP.x-1)*gridSize+wallSize, gridP.y*gridSize-wallSize, 2*gridSize-2*wallSize, 2*wallSize);
+                }
+                else {
+                    g.fillRect((gridP.x)*gridSize-wallSize, (gridP.y-1)*gridSize+wallSize, 2*wallSize, 2*gridSize-2*wallSize);
                 }
             }
         }
+    }
+    private static int getUsedLength(Wall[] arr)
+    {
+        int count = 0;
+        for (Wall w : arr)
+        {
+            if (w != null)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 }

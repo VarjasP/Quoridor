@@ -19,7 +19,6 @@ public class Main {
         gameGUI.drawMenu();
 
 
-
         GameTRX gameTRX = GameTRX.getInstance();
         System.out.print(gameTRX.getMyIP());
 
