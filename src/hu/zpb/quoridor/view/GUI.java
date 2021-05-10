@@ -226,9 +226,33 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     public void mouseReleased(MouseEvent e) {
         int x=e.getX();
         int y=e.getY();
-        int xcoord = round(x / 60);
-        int ycoord = round(y/ 60);
-        gm.getGameModelData().getPlayerList()[0].setActualPosition(new Point(xcoord,ycoord));
+        int xCoord = round(x / gridSize);
+        int yCoord = round(y/ gridSize);
+        int currWallNum = getUsedLength(gm.getGameModelData().getWallList());
+        if (currWallNum < 20) {
+            // Bal fal
+            if (x % gridSize < wallSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
+                    gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'v');
+                }
+            // Jobb fal
+            if (x % gridSize > wallSize+rectSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
+                gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord+1, yCoord+1), wallColor, 'v');
+            }
+            // Fenti fal
+            if (y % gridSize < wallSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
+                gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord), wallColor, 'h');
+            }
+            // Lenti fal
+            if (y % gridSize > wallSize+rectSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
+                gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'h');
+            }
+        }
+
+        // Mező
+        if (x % gridSize > wallSize && x % gridSize < wallSize + rectSize &&
+                y % gridSize > wallSize && y % gridSize < wallSize + rectSize) {
+            gm.getGameModelData().getPlayerList()[0].setActualPosition(new Point(xCoord, yCoord));
+        }
         refreshGame();
         GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
     }
