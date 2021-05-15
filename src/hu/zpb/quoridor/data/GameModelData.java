@@ -57,6 +57,8 @@ public class GameModelData {
     public boolean getGameFinished() {
         return gameFinished;
     }
+
+    // TODO public Player GetPlayerByID
 }
 
 

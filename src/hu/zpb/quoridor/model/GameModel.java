@@ -98,7 +98,8 @@ public class GameModel {
 
         // szomszédos mező yeah, és nincs arrafele fal
         if(isPointAdjacent(curPos, newPos) && !isWallBetween(curPos,newPos)){
-            getCurrentPlayer().setActualPosition(newPos);
+            gmd.getCurPlayer().setActualPosition(newPos);
+            gmd.getPlayerList()[gmd.getCurPlayer().getID()] = gmd.getCurPlayer();
             if (isGameFinished()) {
                 gmd.setGameFinished(true);
             }
@@ -111,7 +112,8 @@ public class GameModel {
            isPointAdjacent(getOtherPlayer().getActualPosition(), newPos) &&
            !isWallBetween(curPos, getOtherPlayer().getActualPosition()) &&
            !isWallBetween(getOtherPlayer().getActualPosition(), newPos)){
-            getCurrentPlayer().setActualPosition(newPos);
+            gmd.getCurPlayer().setActualPosition(newPos);
+            gmd.getPlayerList()[gmd.getCurPlayer().getID()] = gmd.getCurPlayer();
             if (isGameFinished()) {
                 gmd.setGameFinished(true);
             }
@@ -129,7 +131,7 @@ public class GameModel {
         int py = (int)pos.getY();
 
         // játékosnak van-e elég fala?
-        if (getCurrentPlayer().getAvailableWalls() <= 0) {
+        if (gmd.getCurPlayer().getAvailableWalls() <= 0) {
             return false;
         }
 
@@ -161,7 +163,8 @@ public class GameModel {
         }
 
         gmd.addWall(wall);
-        getCurrentPlayer().minusAvailableWalls();
+        gmd.getCurPlayer().minusAvailableWalls();
+        gmd.getPlayerList()[gmd.getCurPlayer().getID()] = gmd.getCurPlayer();
         gmd.setCurPlayer(getOtherPlayer());
         return true;
     }
@@ -235,15 +238,6 @@ public class GameModel {
         }
 
         return null; // :O
-    }
-    private Player getCurrentPlayer() {
-        for(Player p: gmd.getPlayerList()){
-            if(p.getID() == gmd.getCurPlayer().getID()){
-                return p;
-            }
-        }
-
-        return null; // :O TODO
     }
 
     private Wall getWallBy(Point position, Character orientation){
