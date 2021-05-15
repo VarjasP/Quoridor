@@ -271,7 +271,7 @@ public class GameModel {
                         neighborList[2] = new Point(x,y+1);
                         neighborList[3] = new Point(x,y-1);
                         for (Point currN : neighborList) {
-                            if (isPointWithin(currN, 8,8) && !isWallBetween(currP, currN)) {
+                            if (isPointWithin(currN, 8,8) && !isWallBetween(currP, currN, newWall)) {
                                 if (flowArr[(int)currN.getX()][(int)currN.getY()] == 0) {
                                     flowArr[(int)currN.getX()][(int)currN.getY()] = watchedNum + 1;
                                     modified = true;
