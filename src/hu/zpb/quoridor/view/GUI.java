@@ -18,6 +18,9 @@ import static java.lang.Math.round;
 public class GUI extends JComponent implements ActionListener, MouseListener {
 
     private JFrame menuFrame;
+    private JPanel clientPanel;
+    private JPanel serverPanel;
+    private JPanel serverWaitingPanel;
     private JButton bSelectColor;
     private JButton bPlayServer;
     private JButton bPlayClient;
@@ -48,6 +51,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     private int playerSize = 30;
 
     public GUI() {
+
         wallColor = Color.decode("#d78564");
     }
 
@@ -93,6 +97,22 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         gameFrame.repaint();
     }
 
+    public void drawMenuWaitingForClient() {
+        //menuFrame.add(clientPanel);
+        serverWaitingPanel = new JPanel();
+        serverWaitingPanel.setBounds(450, 250, 450, 450);
+        serverWaitingPanel.setBackground(Color.LIGHT_GRAY);
+
+        JLabel lWaiting = new JLabel("Waiting for other player to connect...", SwingConstants.CENTER);
+        lWaiting.setBounds(100, 30, 250, 50);
+
+        serverWaitingPanel.add(lWaiting);
+        serverWaitingPanel.setLayout(null);
+        menuFrame.remove(clientPanel);
+        menuFrame.add(serverWaitingPanel);
+        menuFrame.repaint();
+    }
+
     public void drawMenu() {
         // for connection
         gameTRX = GameTRX.getInstance();
@@ -129,7 +149,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
 
         // Panel for server options
 
-        JPanel serverPanel = new JPanel();
+        serverPanel = new JPanel();
         serverPanel.setBounds(0, 250, 450, 450);
 
         JLabel lRunServer = new JLabel("Run game as a server", SwingConstants.CENTER);
@@ -159,14 +179,14 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
 
         // Panel for client options
 
-        JPanel clientPanel = new JPanel();
+        clientPanel = new JPanel();
         clientPanel.setBounds(450, 250, 450, 450);
 
         JLabel lRunClient = new JLabel("Run game as a client", SwingConstants.CENTER);
         lRunClient.setBounds(125, 30, 200, 50);
         JLabel lServerIP = new JLabel("Server IP:");
         lServerIP.setBounds(100, 80, 100, 30);
-        tfServerIP = new JTextField(GameTRX.getInstance().getMyIP());
+        tfServerIP = new JTextField("127.0.0.1");
         tfServerIP.setBounds(200, 80, 150, 30);
         JLabel lServerPort = new JLabel("Server port:");
         lServerPort.setBounds(100, 120, 100, 30);
@@ -205,11 +225,13 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             bSelectColor.setBackground(playerColor);
         }
         // Szerver indítása
+
         if(e.getSource() == bPlayServer) {
             playerName = tfYourName.getText();
             ipAddress = tfYourIP.getText();
             portNumber = Integer.parseInt(tfSetPort.getText());
-            menuFrame.setVisible(false);
+            if(playerColor == null) { playerColor = Color.BLACK; }
+            if(playerName == "Name") { playerName = "Server"; }
 
             gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
                 @Override
@@ -221,17 +243,26 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
                 public void playerJoined(Player clientPlayer) {
                     gm.addPlayers(new Player(new Point(4,0), playerColor, 0, playerName, 10), clientPlayer);
                     gameTRX.sendGameEvent(gm.getGameModelData());
+
+                    // Frame váltás
+                    menuFrame.setVisible(false);
                     drawGame();
                 }
             });
             gameTRX.createServer(portNumber);
 
+            // Várakozó frame
+            drawMenuWaitingForClient();
         }
         // Kliens indítása
+
         if(e.getSource() == bPlayClient) {
             playerName = tfYourName.getText();
             ipAddress = tfServerIP.getText();
             portNumber = Integer.parseInt(tfServerPort.getText());
+            if(playerColor == null) { playerColor = Color.WHITE; }
+            if(playerName == "Name") { playerName = "Client"; }
+
             menuFrame.setVisible(false);
 
             gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
