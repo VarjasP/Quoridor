@@ -84,15 +84,18 @@ public class GameModel {
             return false;
         }
 
-        if(isPointAdjacent(curPos, newPos)){
+        // szomszédos mező yeah, és nincs arrafele fal
+        if(isPointAdjacent(curPos, newPos) && !isWallBetween(curPos,newPos)){
             getCurrentPlayer().setActualPosition(newPos);
             gmd.setCurPlayer(getOtherPlayer());
             return true;
         }
 
-        // ellenfél átugrása
+        // ellenfél átugrása, és nincs útban fal
         if(isPointAdjacent(curPos, getOtherPlayer().getActualPosition()) &&
-           isPointAdjacent(getOtherPlayer().getActualPosition(), newPos)){
+           isPointAdjacent(getOtherPlayer().getActualPosition(), newPos) &&
+           !isWallBetween(curPos, getOtherPlayer().getActualPosition()) &&
+           !isWallBetween(getOtherPlayer().getActualPosition(), newPos)){
             getCurrentPlayer().setActualPosition(newPos);
             gmd.setCurPlayer(getOtherPlayer());
             return true;
@@ -122,6 +125,41 @@ public class GameModel {
     }
 
 
+    // pFrom and pTo must be adjacent points
+    private boolean isWallBetween(Point pointFrom, Point pointTo){
+        int p1x = (int)pointFrom.getX();
+        int p1y = (int)pointFrom.getY();
+        int p2x = (int)pointTo.getX();
+        int p2y = (int)pointTo.getY();
+
+        // jobbra
+        if(p2x-p1x == 1){
+            return (getWallBy(new Point(p1x+1, p1y), 'v') != null  ||
+               getWallBy(new Point(p1x+1, p1y+1), 'v') != null);
+        }
+
+        // balra
+        if(p2x-p1x == -1){
+            return (getWallBy(new Point(p1x, p1y), 'v') != null  ||
+                    getWallBy(new Point(p1x, p1y+1), 'v') != null);
+        }
+
+        // le
+        if(p2y-p1y == 1){
+            return (getWallBy(new Point(p1x, p1y+1), 'h') != null  ||
+                    getWallBy(new Point(p1x+1, p1y+1), 'h') != null);
+        }
+
+        // fel
+        if(p2y-p1y == -1){
+            return (getWallBy(new Point(p1x, p1y), 'h') != null  ||
+                    getWallBy(new Point(p1x+1, p1y), 'h') != null);
+        }
+
+        return false;
+    }
+
+
     // TODO: ezek game model databa?
     private  Player getOtherPlayer() {
         for (Player p : gmd.getPlayerList()) {
@@ -140,6 +178,17 @@ public class GameModel {
         }
 
         return null; // :O
+    }
+
+    private Wall getWallBy(Point position, Character orientation){
+        for(Wall w : gmd.getWallList()){
+            if(w != null){
+                if(isPointSame(w.getActualPosition(),position) && w.getOrientation() == orientation){
+                    return w;
+                }
+            }
+        }
+        return null;
     }
 
 }
