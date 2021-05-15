@@ -36,8 +36,8 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     private int portNumber;
 
     private JFrame gameFrame;
+    private JPanel gameBackgroundPanel;
     private DrawCanvas gameCanvas;
-    private DrawCanvas statusCanvas;
 
     private JButton bGiveUp;
 
@@ -66,11 +66,19 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     public void drawGame() {
         gameFrame = new JFrame(); //creating instance of JFrame
         gameFrame.setSize(900, 600);
+
+        gameBackgroundPanel = new JPanel();
+        gameBackgroundPanel.setBackground(Color.decode("#7f3327"));
+        gameBackgroundPanel.setBounds(0,0,600,600);
+
         gameCanvas = new DrawCanvas();
-        gameCanvas.setBounds(0,0,600,600);
+        gameCanvas.setBounds(30,10,540,540);
         gameCanvas.setBackground(Color.decode("#7f3327"));
         gameCanvas.addMouseListener(this);
-        gameFrame.getContentPane().add(gameCanvas, BorderLayout.CENTER);
+
+        gameBackgroundPanel.add(gameCanvas);
+        gameBackgroundPanel.setLayout(null);
+        gameFrame.getContentPane().add(gameBackgroundPanel, BorderLayout.CENTER);
         gameFrame.repaint();
 
         JPanel statusBar = new JPanel();
@@ -186,7 +194,12 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         lRunClient.setBounds(125, 30, 200, 50);
         JLabel lServerIP = new JLabel("Server IP:");
         lServerIP.setBounds(100, 80, 100, 30);
+<<<<<<< Updated upstream
         tfServerIP = new JTextField("127.0.0.1");
+=======
+//        tfServerIP = new JTextField(GameTRX.getInstance().getMyIP());
+        tfServerIP = new JTextField("0.0.0.0");
+>>>>>>> Stashed changes
         tfServerIP.setBounds(200, 80, 150, 30);
         JLabel lServerPort = new JLabel("Server port:");
         lServerPort.setBounds(100, 120, 100, 30);

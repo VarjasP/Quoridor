@@ -7,12 +7,13 @@ import hu.zpb.quoridor.data.Player;
 import hu.zpb.quoridor.data.Wall;
 
 import java.awt.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameModel {
-    /* TODO: gamespace? */
 
     protected GameModelData gmd;
     protected GUI gui;
+    protected int myPlayerID;
 
     public void setGui(GUI gui) {
         this.gui = gui;
@@ -72,10 +73,7 @@ public class GameModel {
     public void addPlayers(Player serverPlayer, Player clientPlayer) {
         gmd.getPlayerList()[0] = serverPlayer;
         gmd.getPlayerList()[1] = clientPlayer;
-//        TODO: random curPlayer
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 1 + 1);
+        gmd.setCurPlayer(gmd.getPlayerList()[randomNum]);
     }
-
-
-
-
 }
