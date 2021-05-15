@@ -23,6 +23,10 @@ public class GameModel {
         return gmd;
     }
 
+    public void setGameModelData(GameModelData data) {
+        gmd = data;
+    }
+
     // Pista teszt konstruktor
     public GameModel() {
         gmd = new GameModelData();
