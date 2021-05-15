@@ -307,23 +307,33 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             int y=e.getY();
             int xCoord = round(x / gridSize);
             int yCoord = round(y/ gridSize);
-            int currWallNum = getUsedLength(gm.getGameModelData().getWallList());
-            if (currWallNum < 20) {
-                // Bal fal
-                if (x % gridSize < wallSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
-                    gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'v');
+
+            // Bal fal
+            if (x % gridSize < wallSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
+                if(gm.placeWall(new Point(xCoord, yCoord+1), 'v')){
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
                 }
-                // Jobb fal
-                if (x % gridSize > wallSize+rectSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
-                    gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord+1, yCoord+1), wallColor, 'v');
+            }
+            // Jobb fal
+            if (x % gridSize > wallSize+rectSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
+                if(gm.placeWall(new Point(xCoord+1, yCoord+1), 'v')){
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
                 }
-                // Fenti fal
-                if (y % gridSize < wallSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
-                    gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord), wallColor, 'h');
+            }
+            // Fenti fal
+            if (y % gridSize < wallSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
+                if(gm.placeWall(new Point(xCoord, yCoord), 'h')){
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
                 }
-                // Lenti fal
-                if (y % gridSize > wallSize+rectSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
-                    gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'h');
+            }
+            // Lenti fal
+            if (y % gridSize > wallSize+rectSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
+                if(gm.placeWall(new Point(xCoord, yCoord+1), 'h')){
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
                 }
             }
 
@@ -373,7 +383,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             }
             // Draw walls
             g.setColor(wallColor);
-            for (int i=0; i < getUsedLength(gm.getGameModelData().getWallList()); i++) {
+            for (int i=0; i < gm.getGameModelData().getWallCount(); i++) {
                 Wall w = gm.getGameModelData().getWallList()[i];
                 Point gridP = new Point(w.getActualPosition().x, w.getActualPosition().y);
                 if (w.getOrientation() == 'h') {
@@ -384,17 +394,5 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
                 }
             }
         }
-    }
-    private static int getUsedLength(Wall[] arr)
-    {
-        int count = 0;
-        for (Wall w : arr)
-        {
-            if (w != null)
-            {
-                count++;
-            }
-        }
-        return count;
     }
 }
