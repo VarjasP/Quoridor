@@ -111,7 +111,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         // Feladás gomb
 
         bGiveUp = new JButton("Give up");
-        bGiveUp.setBounds(110, 160, 80, 30);
+        bGiveUp.setBounds(110, 280, 80, 40);
         bGiveUp.addActionListener(this);
         statusBar.add(bGiveUp);
 
