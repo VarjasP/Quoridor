@@ -17,10 +17,21 @@ import static java.lang.Math.round;
 
 public class GUI extends JComponent implements ActionListener, MouseListener {
 
+    private GameModel gm;
+    GameTRX gameTRX;
+    private boolean gameJustStarted;
+
+    private JFrame gameFrame;
+    private JPanel gameBackgroundPanel;
+    private JPanel statusBar;
+    private DrawCanvas gameCanvas;
+
     private JFrame menuFrame;
     private JPanel clientPanel;
     private JPanel serverPanel;
     private JPanel serverWaitingPanel;
+    private JDialog dError;
+
     private JButton bSelectColor;
     private JButton bPlayServer;
     private JButton bPlayClient;
@@ -29,20 +40,15 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     private JTextField tfSetPort;
     private JTextField tfServerIP;
     private JTextField tfServerPort;
+    private JLabel lCurrentPlayer;
+    private JLabel lServerPlayerWalls;
+    private JLabel lClientPlayerWalls;
+    private JButton bGiveUp;
 
     private String playerName;
     private Color playerColor;
     private String ipAddress;
     private int portNumber;
-
-    private JFrame gameFrame;
-    private JPanel gameBackgroundPanel;
-    private DrawCanvas gameCanvas;
-
-    private JButton bGiveUp;
-
-    private GameModel gm;
-    GameTRX gameTRX;
 
     private Color wallColor;
     private int gridSize = 60;
@@ -53,6 +59,9 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     public GUI() {
 
         wallColor = Color.decode("#d78564");
+        gameJustStarted = true;
+        dError = new JDialog(menuFrame, "Error Message", true);
+        dError.setSize(500, 120);
     }
 
     public void setGm(GameModel gm) {
@@ -66,6 +75,8 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     public void drawGame() {
         gameFrame = new JFrame(); //creating instance of JFrame
         gameFrame.setSize(900, 600);
+
+        // Játéktér
 
         gameBackgroundPanel = new JPanel();
         gameBackgroundPanel.setBackground(Color.decode("#7f3327"));
@@ -83,25 +94,82 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
 
         JPanel statusBar = new JPanel();
         statusBar.setBounds(600,0,300,600);
-        JLabel text = new JLabel("Mi van itt és hol?");
-        text.setBounds(100, 80, 100, 30);
-        statusBar.add(text);
+
+        // Szerver játékos adatai
+
+        JLabel lServerPlayerName = new JLabel(gm.getGameModelData().getPlayerList()[0].getName(), SwingConstants.CENTER);
+        lServerPlayerName.setBounds(100, 50, 100, 30);
+        lServerPlayerName.setFont(new Font("Arial", Font.PLAIN, 24));
+        statusBar.add(lServerPlayerName);
+
+        lServerPlayerWalls = new JLabel("Available walls: " +
+                Integer.toString(gm.getGameModelData().getPlayerList()[0].getAvailableWalls()), SwingConstants.CENTER);
+        lServerPlayerWalls.setBounds(75, 100, 150, 30);
+        lServerPlayerWalls.setFont(new Font("Arial", Font.PLAIN, 16));
+        statusBar.add(lServerPlayerWalls);
+
+        // Feladás gomb
 
         bGiveUp = new JButton("Give up");
-        bGiveUp.setBounds(110, 160, 80, 30);
+        bGiveUp.setBounds(110, 280, 80, 40);
         bGiveUp.addActionListener(this);
         statusBar.add(bGiveUp);
+
+        // Aktuális játékos
+        lCurrentPlayer = new JLabel();
+        // Ha szerver játékos jön
+        if (gm.getGameModelData().getCurPlayer().getID() == 0) {
+            lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[0].getName());
+            lCurrentPlayer.setBounds(0, 200, 300, 30);
+        // Ha kliens játékos jön
+        } else if (gm.getGameModelData().getCurPlayer().getID() == 1) {
+            lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[1].getName());
+            lCurrentPlayer.setBounds(0, 370, 300, 30);
+        }
+        lCurrentPlayer.setFont(new Font("Arial", Font.BOLD, 20));
+        lCurrentPlayer.setForeground(Color.decode("#7f3327"));
+        lCurrentPlayer.setHorizontalAlignment(SwingConstants.CENTER);
+        statusBar.add(lCurrentPlayer);
+
+        JLabel lClientPlayerName = new JLabel(gm.getGameModelData().getPlayerList()[1].getName(), SwingConstants.CENTER);
+        lClientPlayerName.setBounds(100, 450, 100, 30);
+        lClientPlayerName.setFont(new Font("Arial", Font.PLAIN, 24));
+        statusBar.add(lClientPlayerName);
+
+        // Kliens játékos adatai
+
+        lClientPlayerWalls = new JLabel("Available walls: " +
+                Integer.toString(gm.getGameModelData().getPlayerList()[1].getAvailableWalls()), SwingConstants.CENTER);
+        lClientPlayerWalls.setBounds(75, 500, 150, 30);
+        lClientPlayerWalls.setFont(new Font("Arial", Font.PLAIN, 16));
+        statusBar.add(lClientPlayerWalls);
 
         statusBar.setLayout(null);
         gameFrame.add(statusBar);
         gameFrame.setLayout(null);
-
-        gameFrame.setVisible(true);//making the frame visible
         gameFrame.setResizable(false);
         gameFrame.setLocationRelativeTo(null);
+        gameFrame.setVisible(true);
     }
 
     public void refreshGame(){
+
+        // Státuszbár frissítése
+
+        // Ha szerver játékos jön
+        if (gm.getGameModelData().getCurPlayer().getID() == 0) {
+            lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[0].getName());
+            lCurrentPlayer.setBounds(0, 200, 300, 30);
+            // Ha kliens játékos jön
+        } else if (gm.getGameModelData().getCurPlayer().getID() == 1) {
+            lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[1].getName());
+            lCurrentPlayer.setBounds(0, 370, 300, 30);
+        }
+        lServerPlayerWalls.setText("Available walls: " +
+                Integer.toString(gm.getGameModelData().getPlayerList()[0].getAvailableWalls()));
+        lClientPlayerWalls.setText("Available walls: " +
+                Integer.toString(gm.getGameModelData().getPlayerList()[1].getAvailableWalls()));
+
         gameFrame.repaint();
     }
 
@@ -220,26 +288,44 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         menuFrame.add(playerPanel);
         menuFrame.add(serverPanel);
         menuFrame.add(clientPanel);
-        menuFrame.setLayout(null);//using no layout managers
 
+        menuFrame.setLayout(null);
+        menuFrame.setResizable(false);
+        menuFrame.setLocationRelativeTo(null);
         menuFrame.setDefaultCloseOperation((JFrame.EXIT_ON_CLOSE));
         menuFrame.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == bSelectColor) {
+        if (e.getSource() == bSelectColor) {
             playerColor = JColorChooser.showDialog(this, "Select a color", Color.BLACK);
             bSelectColor.setBackground(playerColor);
         }
         // Szerver indítása
 
-        if(e.getSource() == bPlayServer) {
+        if (e.getSource() == bPlayServer) {
             playerName = tfYourName.getText();
             ipAddress = tfYourIP.getText();
-            portNumber = Integer.parseInt(tfSetPort.getText());
-            if(playerColor == null) { playerColor = Color.BLACK; }
-            if(playerName == "Name") { playerName = "Server"; }
+
+            try {
+                portNumber = Integer.parseInt(tfSetPort.getText());
+            }
+            catch (NumberFormatException ex) {
+                ex.printStackTrace();
+                dError.setLayout(new FlowLayout());
+                dError.add(new JLabel("Tisztelt Kolléga!"));
+                dError.add(new JLabel("Ez a játék érett, felelősségteljes mérnököknek készült."));
+                dError.add(new JLabel("Kérem, ha egy adatbeviteli mező számot vár, legyen szíves számot megadni,"));
+                dError.add(new JLabel("megfelelő formátumban, nem pedig szöveget."));
+                dError.add(new JLabel("Együttműködését köszönjük!"));
+                dError.setLocationRelativeTo(null);
+                dError.setVisible(true);
+            }
+
+
+            if (playerColor == null) { playerColor = Color.BLACK; }
+            if (playerName.equals("Name")) { playerName = "Server"; }
 
             gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
                 @Override
@@ -270,14 +356,20 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             ipAddress = tfServerIP.getText();
             portNumber = Integer.parseInt(tfServerPort.getText());
             if(playerColor == null) { playerColor = Color.WHITE; }
-            if(playerName == "Name") { playerName = "Client"; }
-
-            menuFrame.setVisible(false);
+            if(playerName.equals("Name")) { playerName = "Client"; }
 
             gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
                 @Override
                 public void networkEventCallback(GameModelData data) {
-                    gm.updateGame(data);
+                    if (gameJustStarted == true) {
+                        gameJustStarted = false;
+                        menuFrame.setVisible(false);
+                        gm.setGameModelData(data);
+                        drawGame();
+                    } else {
+                        gm.updateGame(data);
+                    }
+
                 }
 
                 @Override
@@ -287,8 +379,6 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             gameTRX.createClient(ipAddress, portNumber);
             gameTRX.joinPlayer(new Player(new Point(4,8), playerColor, 1, playerName, 10));
             gm.setMyPlayerID(1);
-
-            drawGame();
         }
     }
 

@@ -47,6 +47,10 @@ public class GameModel {
     public void setMyPlayerID(int myPlayerID) {
         this.myPlayerID = myPlayerID;
     }
+    
+    public void setGameModelData(GameModelData data) {
+    	gmd = data;
+    }
 
     protected void calcPossiblePlayerPos() {
     }
