@@ -113,7 +113,9 @@ public class GameModel {
         return false;
     }
 
-    public boolean placeWall(Point pos, Character orientation) {
+    public boolean placeWall(Wall wall) {
+        Point pos = wall.getActualPosition();
+        Character orientation = wall.getOrientation();
         int px = (int)pos.getX();
         int py = (int)pos.getY();
 
@@ -121,7 +123,13 @@ public class GameModel {
         if (getCurrentPlayer().getAvailableWalls() <= 0) {
             return false;
         }
-        // másik fallal nem ütközünk
+
+        // pálya széle
+        if (!isPointWithin(pos,1,8,1,8)) {
+            return false;
+        }
+
+        // másik fallal ütközés
         if (getWallBy(pos,'h') != null || getWallBy(pos,'v') != null) { // ugyan azon a ponton már van fal
             return false;
         }
@@ -139,12 +147,11 @@ public class GameModel {
         }
 
         // TODO: játékosokat nem zárjuk el
-        Wall newWall = new Wall(pos, orientation);
-        if (isQuarantined(gmd.getPlayerList()[0], newWall) || isQuarantined(gmd.getPlayerList()[1], newWall)) {
+        if (isQuarantined(gmd.getPlayerList()[0], wall) || isQuarantined(gmd.getPlayerList()[1], wall)) {
             return false;
         }
 
-        gmd.addWall(new Wall(pos, orientation));
+        gmd.addWall(wall);
         getCurrentPlayer().minusAvailableWalls();
         gmd.setCurPlayer(getOtherPlayer());
         return true;
@@ -157,9 +164,13 @@ public class GameModel {
     }
 
     private boolean isPointWithin(Point p, int limitX, int limitY){
+        return isPointWithin(p, 0, limitX, 0, limitY);
+    }
+
+    private boolean isPointWithin(Point p, int lowX, int highX, int lowY, int highY){
         int x = (int)p.getX();
         int y = (int)p.getY();
-        return (x >= 0 && y >= 0 && x <= limitX & y <= limitY);
+        return (x >= lowX && x <= highX && y >= lowY && y <= highY);
     }
 
     private boolean isPointSame(Point p1, Point p2){

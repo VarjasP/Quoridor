@@ -398,30 +398,27 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             int xCoord = round(x / gridSize);
             int yCoord = round(y/ gridSize);
 
+            Wall w = null;
+
             // Bal fal
             if (x % gridSize < wallSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
-                if(gm.placeWall(new Point(xCoord, yCoord+1), 'v')){
-                    refreshGame();
-                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
-                }
+                w = new Wall(new Point(xCoord, yCoord+1), 'v');
             }
             // Jobb fal
             if (x % gridSize > wallSize+rectSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
-                if(gm.placeWall(new Point(xCoord+1, yCoord+1), 'v')){
-                    refreshGame();
-                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
-                }
+                w = new Wall(new Point(xCoord+1, yCoord+1), 'v');
             }
             // Fenti fal
             if (y % gridSize < wallSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
-                if(gm.placeWall(new Point(xCoord, yCoord), 'h')){
-                    refreshGame();
-                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
-                }
+                w = new Wall(new Point(xCoord, yCoord), 'h');
             }
             // Lenti fal
             if (y % gridSize > wallSize+rectSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
-                if(gm.placeWall(new Point(xCoord, yCoord+1), 'h')){
+                w = new Wall(new Point(xCoord, yCoord+1), 'h');
+            }
+
+            if(w != null){
+                if(gm.placeWall(w)){
                     refreshGame();
                     GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
                 }
