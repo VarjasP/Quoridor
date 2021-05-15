@@ -15,19 +15,9 @@ public class GameModel {
     protected GUI gui;
     protected int myPlayerID;
 
-    public void setGui(GUI gui) {
-        this.gui = gui;
-    }
-
-    public GameModelData getGameModelData() {
-        return gmd;
-    }
-
-    // Pista teszt konstruktor
     public GameModel() {
         gmd = new GameModelData();
         System.out.println("Szevasz Pista");
-//        this.curPlayer = new Player(new Point(4,0), Color.BLACK, 1, "én", 10);
 
         GameTRX.getInstance().setNetworkEvent(new GameTRX.NetworkEvent() {
             @Override
@@ -42,6 +32,21 @@ public class GameModel {
         });
     }
 
+    public void setGui(GUI gui) {
+        this.gui = gui;
+    }
+
+    public GameModelData getGameModelData() {
+        return gmd;
+    }
+
+    public int getMyPlayerID() {
+        return myPlayerID;
+    }
+
+    public void setMyPlayerID(int myPlayerID) {
+        this.myPlayerID = myPlayerID;
+    }
 
     protected void calcPossiblePlayerPos() {
     }
