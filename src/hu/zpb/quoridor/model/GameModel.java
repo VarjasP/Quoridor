@@ -162,6 +162,10 @@ public class GameModel {
 
     // pFrom and pTo must be adjacent points
     private boolean isWallBetween(Point pointFrom, Point pointTo){
+        return isWallBetween(pointFrom, pointTo, null);
+    }
+
+    private boolean isWallBetween(Point pointFrom, Point pointTo, Wall extraWall) {
         int p1x = (int)pointFrom.getX();
         int p1y = (int)pointFrom.getY();
         int p2x = (int)pointTo.getX();
@@ -169,26 +173,26 @@ public class GameModel {
 
         // jobbra
         if(p2x-p1x == 1){
-            return (getWallBy(new Point(p1x+1, p1y), 'v') != null  ||
-               getWallBy(new Point(p1x+1, p1y+1), 'v') != null);
+            return (getWallBy(new Point(p1x+1, p1y), 'v', extraWall) != null  ||
+                    getWallBy(new Point(p1x+1, p1y+1), 'v', extraWall) != null);
         }
 
         // balra
         if(p2x-p1x == -1){
-            return (getWallBy(new Point(p1x, p1y), 'v') != null  ||
-                    getWallBy(new Point(p1x, p1y+1), 'v') != null);
+            return (getWallBy(new Point(p1x, p1y), 'v', extraWall) != null  ||
+                    getWallBy(new Point(p1x, p1y+1), 'v', extraWall) != null);
         }
 
         // le
         if(p2y-p1y == 1){
-            return (getWallBy(new Point(p1x, p1y+1), 'h') != null  ||
-                    getWallBy(new Point(p1x+1, p1y+1), 'h') != null);
+            return (getWallBy(new Point(p1x, p1y+1), 'h', extraWall) != null  ||
+                    getWallBy(new Point(p1x+1, p1y+1), 'h', extraWall) != null);
         }
 
         // fel
         if(p2y-p1y == -1){
-            return (getWallBy(new Point(p1x, p1y), 'h') != null  ||
-                    getWallBy(new Point(p1x+1, p1y), 'h') != null);
+            return (getWallBy(new Point(p1x, p1y), 'h', extraWall) != null  ||
+                    getWallBy(new Point(p1x+1, p1y), 'h', extraWall) != null);
         }
 
         return false;
@@ -216,6 +220,23 @@ public class GameModel {
     }
 
     private Wall getWallBy(Point position, Character orientation){
+        for(Wall w : gmd.getWallList()){
+            if(w != null){
+                if(isPointSame(w.getActualPosition(),position) && w.getOrientation() == orientation){
+                    return w;
+                }
+            }
+        }
+        return null; // :O TODO
+    }
+
+    private Wall getWallBy(Point position, Character orientation, Wall extraWall){
+        if(extraWall != null) {
+            if (isPointSame(extraWall.getActualPosition(), position) && extraWall.getOrientation() == orientation) {
+                return extraWall;
+            }
+        }
+
         for(Wall w : gmd.getWallList()){
             if(w != null){
                 if(isPointSame(w.getActualPosition(),position) && w.getOrientation() == orientation){
