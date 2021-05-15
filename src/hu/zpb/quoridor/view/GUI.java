@@ -288,10 +288,13 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         // Mező
         if (x % gridSize > wallSize && x % gridSize < wallSize + rectSize &&
                 y % gridSize > wallSize && y % gridSize < wallSize + rectSize) {
-            gm.getGameModelData().getPlayerList()[0].setActualPosition(new Point(xCoord, yCoord));
+            if(gm.movePlayer(new Point(xCoord, yCoord)))
+            {
+                refreshGame();
+                GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+            }
         }
-        refreshGame();
-        GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+
     }
 
     @Override

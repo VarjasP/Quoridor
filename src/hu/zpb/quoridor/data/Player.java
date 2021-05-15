@@ -9,10 +9,6 @@ public class Player extends MovableObject{
     protected int availableWalls;
 
 
-
-    public Player() {
-    }
-
     public Player(Point startP, Color startC, int ID, String name, int availableWalls) {
         this.actualPosition = startP;
         this.color = startC;
@@ -21,6 +17,15 @@ public class Player extends MovableObject{
         this.availableWalls = availableWalls;
     }
 
+    public int getID() {
+        return ID;
+    }
 
+    public String getName() {
+        return name;
+    }
 
+    public int getAvailableWalls() {
+        return availableWalls;
+    }
 }
