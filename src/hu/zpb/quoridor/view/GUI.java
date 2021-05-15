@@ -214,6 +214,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
                 @Override
                 public void networkEventCallback(GameModelData data) {
+                    gm.updateGame(data);
                 }
 
                 @Override
@@ -236,7 +237,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
                 @Override
                 public void networkEventCallback(GameModelData data) {
-                    drawGame();
+                    gm.updateGame(data);
                 }
 
                 @Override
@@ -246,6 +247,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             gameTRX.createClient(ipAddress, portNumber);
             gameTRX.joinPlayer(new Player(new Point(4,8), playerColor, 1, playerName, 10));
 
+            drawGame();
         }
     }
 

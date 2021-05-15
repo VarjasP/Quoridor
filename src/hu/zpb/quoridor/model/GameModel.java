@@ -66,7 +66,7 @@ public class GameModel {
     }
     public void updateGame(GameModelData newData) {
         gmd = newData;
-        gui.drawGame();
+        gui.refreshGame();
     }
 
     public void addPlayers(Player serverPlayer, Player clientPlayer) {
