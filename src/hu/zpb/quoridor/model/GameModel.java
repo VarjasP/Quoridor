@@ -96,7 +96,7 @@ public class GameModel {
             return true;
         }
 
-        // ellenfél átugrása, és nincs útban fal
+        // ellenfél átugrása yeah, és nincs útban fal
         if(isPointAdjacent(curPos, getOtherPlayer().getActualPosition()) &&
            isPointAdjacent(getOtherPlayer().getActualPosition(), newPos) &&
            !isWallBetween(curPos, getOtherPlayer().getActualPosition()) &&
@@ -109,7 +109,37 @@ public class GameModel {
         return false;
     }
 
-    public boolean placeWall(Point pos) {
+    public boolean placeWall(Point pos, Character orientation) {
+        int px = (int)pos.getX();
+        int py = (int)pos.getY();
+
+        // játékosnak van-e elég fala?
+        if (getCurrentPlayer().getAvailableWalls() <= 0) {
+            return false;
+        }
+        // másik fallal nem ütközünk
+        if (getWallBy(pos,'h') != null || getWallBy(pos,'v') != null) { // ugyan azon a ponton már van fal
+            return false;
+        }
+        if (orientation == 'h'){ // horizontális fal ellenőrzése balra-jobbra
+            if (getWallBy(new Point(px-1, py),orientation) != null ||
+               getWallBy(new Point(px+1, py),orientation) != null) {
+                return false;
+            }
+        }
+        if (orientation == 'v'){ // horizontális fal ellenőrzése balra-jobbra
+            if (getWallBy(new Point(px, py-1),orientation) != null ||
+               getWallBy(new Point(px, py+1),orientation) != null) {
+                return false;
+            }
+        }
+
+        // TODO: játékosokat nem zárjuk el
+
+
+        gmd.addWall(new Wall(pos, orientation));
+        getCurrentPlayer().minusAvailableWalls();
+        gmd.setCurPlayer(getOtherPlayer());
         return true;
     }
 
@@ -182,7 +212,7 @@ public class GameModel {
             }
         }
 
-        return null; // :O
+        return null; // :O TODO
     }
 
     private Wall getWallBy(Point position, Character orientation){
@@ -193,7 +223,7 @@ public class GameModel {
                 }
             }
         }
-        return null;
+        return null; // :O TODO
     }
 
 }

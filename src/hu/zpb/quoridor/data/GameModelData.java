@@ -33,6 +33,20 @@ public class GameModelData {
     public void setCurPlayer(Player curPlayer) {
         this.curPlayer = curPlayer;
     }
+
+    public void addWall(Wall wall){
+        wallList[getWallCount()] = wall;
+    }
+
+    public int getWallCount() {
+        int count = 0;
+        for (Wall w : wallList) {
+            if (w != null) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
 
 
