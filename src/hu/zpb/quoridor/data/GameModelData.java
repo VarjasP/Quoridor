@@ -4,10 +4,12 @@ public class GameModelData {
     protected Player[] playerList;
     protected Wall[] wallList;
     protected Player curPlayer;
+    protected boolean gameFinished;
 
     public GameModelData() {
         playerList = new Player[2];
         wallList = new Wall[20];
+        gameFinished = false;
     }
 
     public Player[] getPlayerList() {
@@ -46,6 +48,10 @@ public class GameModelData {
             }
         }
         return count;
+    }
+
+    public void setGameFinished(boolean gameFinished) {
+        this.gameFinished = gameFinished;
     }
 }
 

@@ -52,15 +52,18 @@ public class GameModel {
     	gmd = data;
     }
 
-    protected void calcPossiblePlayerPos() {
-    }
     protected Boolean isGameFinished() {
-        if (false) {
-
-            return true;
-        } else {
-            return false;
+        int endRow;
+        if (gmd.getCurPlayer().getID() == 0) {
+            endRow = 8;
         }
+        else {
+            endRow = 0;
+        }
+        if ((int)gmd.getCurPlayer().getActualPosition().getY()==endRow) {
+            return true;
+        }
+        return false;
     }
 
     protected void makeMove() {
@@ -96,6 +99,9 @@ public class GameModel {
         // szomszédos mező yeah, és nincs arrafele fal
         if(isPointAdjacent(curPos, newPos) && !isWallBetween(curPos,newPos)){
             getCurrentPlayer().setActualPosition(newPos);
+            if (isGameFinished()) {
+                gmd.setGameFinished(true);
+            }
             gmd.setCurPlayer(getOtherPlayer());
             return true;
         }
@@ -106,6 +112,9 @@ public class GameModel {
            !isWallBetween(curPos, getOtherPlayer().getActualPosition()) &&
            !isWallBetween(getOtherPlayer().getActualPosition(), newPos)){
             getCurrentPlayer().setActualPosition(newPos);
+            if (isGameFinished()) {
+                gmd.setGameFinished(true);
+            }
             gmd.setCurPlayer(getOtherPlayer());
             return true;
         }
@@ -138,7 +147,6 @@ public class GameModel {
             }
         }
 
-        // TODO: játékosokat nem zárjuk el
         Wall newWall = new Wall(pos, orientation);
         if (isQuarantined(gmd.getPlayerList()[0], newWall) || isQuarantined(gmd.getPlayerList()[1], newWall)) {
             return false;
@@ -276,9 +284,7 @@ public class GameModel {
                                     flowArr[(int)currN.getX()][(int)currN.getY()] = watchedNum + 1;
                                     modified = true;
                                 }
-
                             }
-
                         }
                     }
                 }
@@ -298,14 +304,6 @@ public class GameModel {
             if (flowArr[x][endRow] != 0) {
                 obstructed = false;
             }
-        }
-
-        // debug print
-        for (int x=0; x<9; x++) {
-            for (int y=0; y<9; y++) {
-                System.out.format("%3d", flowArr[x][y]);
-            }
-            System.out.println("");
         }
 
         return obstructed;
