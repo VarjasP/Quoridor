@@ -250,6 +250,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
                 @Override
                 public void playerJoined(Player clientPlayer) {
                     gm.addPlayers(new Player(new Point(4,0), playerColor, 0, playerName, 10), clientPlayer);
+                    gm.setMyPlayerID(0);
                     gameTRX.sendGameEvent(gm.getGameModelData());
 
                     // Frame váltás
@@ -285,6 +286,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             });
             gameTRX.createClient(ipAddress, portNumber);
             gameTRX.joinPlayer(new Player(new Point(4,8), playerColor, 1, playerName, 10));
+            gm.setMyPlayerID(1);
 
             drawGame();
         }
@@ -300,39 +302,43 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        int x=e.getX();
-        int y=e.getY();
-        int xCoord = round(x / gridSize);
-        int yCoord = round(y/ gridSize);
-        int currWallNum = getUsedLength(gm.getGameModelData().getWallList());
-        if (currWallNum < 20) {
-            // Bal fal
-            if (x % gridSize < wallSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
+        if (gm.getMyPlayerID() == gm.getGameModelData().getCurPlayer().getID()) {
+            int x=e.getX();
+            int y=e.getY();
+            int xCoord = round(x / gridSize);
+            int yCoord = round(y/ gridSize);
+            int currWallNum = getUsedLength(gm.getGameModelData().getWallList());
+            if (currWallNum < 20) {
+                // Bal fal
+                if (x % gridSize < wallSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
                     gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'v');
                 }
-            // Jobb fal
-            if (x % gridSize > wallSize+rectSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
-                gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord+1, yCoord+1), wallColor, 'v');
+                // Jobb fal
+                if (x % gridSize > wallSize+rectSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
+                    gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord+1, yCoord+1), wallColor, 'v');
+                }
+                // Fenti fal
+                if (y % gridSize < wallSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
+                    gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord), wallColor, 'h');
+                }
+                // Lenti fal
+                if (y % gridSize > wallSize+rectSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
+                    gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'h');
+                }
             }
-            // Fenti fal
-            if (y % gridSize < wallSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
-                gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord), wallColor, 'h');
+
+            // Mező
+            if (x % gridSize > wallSize && x % gridSize < wallSize + rectSize &&
+                    y % gridSize > wallSize && y % gridSize < wallSize + rectSize) {
+                if(gm.movePlayer(new Point(xCoord, yCoord)))
+                {
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+                }
             }
-            // Lenti fal
-            if (y % gridSize > wallSize+rectSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
-                gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'h');
-            }
+
         }
 
-        // Mező
-        if (x % gridSize > wallSize && x % gridSize < wallSize + rectSize &&
-                y % gridSize > wallSize && y % gridSize < wallSize + rectSize) {
-            if(gm.movePlayer(new Point(xCoord, yCoord)))
-            {
-                refreshGame();
-                GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
-            }
-        }
 
     }
 
