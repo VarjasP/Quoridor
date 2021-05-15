@@ -308,7 +308,8 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             int xCoord = round(x / gridSize);
             int yCoord = round(y/ gridSize);
             int currWallNum = getUsedLength(gm.getGameModelData().getWallList());
-            if (currWallNum < 20) {
+            if (gm.getGameModelData().getCurPlayer().getAvailableWalls() > 0) {
+
                 // Bal fal
                 if (x % gridSize < wallSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
                     gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'v');
