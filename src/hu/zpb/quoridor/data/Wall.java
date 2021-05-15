@@ -11,6 +11,12 @@ public final class Wall extends MovableObject{
         this.orientation = orientation;
     }
 
+    public Wall(Point position, Character orientation) {
+        this.actualPosition = position;
+        this.color = Color.decode("#d78564");
+        this.orientation = orientation;
+    }
+
     public Character getOrientation() {
         return orientation;
     }

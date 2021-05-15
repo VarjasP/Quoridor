@@ -92,9 +92,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         gameFrame.getContentPane().add(gameBackgroundPanel, BorderLayout.CENTER);
         gameFrame.repaint();
 
-        // Státuszbár
-
-        statusBar = new JPanel();
+        JPanel statusBar = new JPanel();
         statusBar.setBounds(600,0,300,600);
 
         // Szerver játékos adatai
@@ -113,7 +111,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         // Feladás gomb
 
         bGiveUp = new JButton("Give up");
-        bGiveUp.setBounds(110, 280, 80, 40);
+        bGiveUp.setBounds(110, 160, 80, 30);
         bGiveUp.addActionListener(this);
         statusBar.add(bGiveUp);
 
@@ -291,7 +289,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         menuFrame.add(serverPanel);
         menuFrame.add(clientPanel);
 
-        menuFrame.setLayout(null);//using no layout managers
+        menuFrame.setLayout(null);
         menuFrame.setResizable(false);
         menuFrame.setLocationRelativeTo(null);
         menuFrame.setDefaultCloseOperation((JFrame.EXIT_ON_CLOSE));
@@ -338,6 +336,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
                 @Override
                 public void playerJoined(Player clientPlayer) {
                     gm.addPlayers(new Player(new Point(4,0), playerColor, 0, playerName, 10), clientPlayer);
+                    gm.setMyPlayerID(0);
                     gameTRX.sendGameEvent(gm.getGameModelData());
 
                     // Frame váltás
@@ -379,6 +378,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             });
             gameTRX.createClient(ipAddress, portNumber);
             gameTRX.joinPlayer(new Player(new Point(4,8), playerColor, 1, playerName, 10));
+            gm.setMyPlayerID(1);
         }
     }
 
@@ -392,39 +392,53 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        int x=e.getX();
-        int y=e.getY();
-        int xCoord = round(x / gridSize);
-        int yCoord = round(y/ gridSize);
-        int currWallNum = getUsedLength(gm.getGameModelData().getWallList());
-        if (currWallNum < 20) {
+        if (gm.getMyPlayerID() == gm.getGameModelData().getCurPlayer().getID()) {
+            int x=e.getX();
+            int y=e.getY();
+            int xCoord = round(x / gridSize);
+            int yCoord = round(y/ gridSize);
+
             // Bal fal
             if (x % gridSize < wallSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
-                    gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'v');
+                if(gm.placeWall(new Point(xCoord, yCoord+1), 'v')){
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
                 }
+            }
             // Jobb fal
             if (x % gridSize > wallSize+rectSize && y % gridSize > wallSize && y % gridSize < wallSize+rectSize) {
-                gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord+1, yCoord+1), wallColor, 'v');
+                if(gm.placeWall(new Point(xCoord+1, yCoord+1), 'v')){
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+                }
             }
             // Fenti fal
             if (y % gridSize < wallSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
-                gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord), wallColor, 'h');
+                if(gm.placeWall(new Point(xCoord, yCoord), 'h')){
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+                }
             }
             // Lenti fal
             if (y % gridSize > wallSize+rectSize && x % gridSize > wallSize && x % gridSize < wallSize+rectSize) {
-                gm.getGameModelData().getWallList()[currWallNum] = new Wall(new Point(xCoord, yCoord+1), wallColor, 'h');
+                if(gm.placeWall(new Point(xCoord, yCoord+1), 'h')){
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+                }
             }
+
+            // Mező
+            if (x % gridSize > wallSize && x % gridSize < wallSize + rectSize &&
+                    y % gridSize > wallSize && y % gridSize < wallSize + rectSize) {
+                if(gm.movePlayer(new Point(xCoord, yCoord)))
+                {
+                    refreshGame();
+                    GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+                }
+            }
+
         }
 
-        // Mező
-        if (x % gridSize > wallSize && x % gridSize < wallSize + rectSize &&
-                y % gridSize > wallSize && y % gridSize < wallSize + rectSize) {
-            if(gm.movePlayer(new Point(xCoord, yCoord)))
-            {
-                refreshGame();
-                GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
-            }
-        }
 
     }
 
@@ -459,7 +473,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             }
             // Draw walls
             g.setColor(wallColor);
-            for (int i=0; i < getUsedLength(gm.getGameModelData().getWallList()); i++) {
+            for (int i=0; i < gm.getGameModelData().getWallCount(); i++) {
                 Wall w = gm.getGameModelData().getWallList()[i];
                 Point gridP = new Point(w.getActualPosition().x, w.getActualPosition().y);
                 if (w.getOrientation() == 'h') {
@@ -470,17 +484,5 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
                 }
             }
         }
-    }
-    private static int getUsedLength(Wall[] arr)
-    {
-        int count = 0;
-        for (Wall w : arr)
-        {
-            if (w != null)
-            {
-                count++;
-            }
-        }
-        return count;
     }
 }

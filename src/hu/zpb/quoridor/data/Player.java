@@ -25,6 +25,10 @@ public class Player extends MovableObject{
         return name;
     }
 
+    public void minusAvailableWalls(){
+        availableWalls--;
+    }
+
     public int getAvailableWalls() {
         return availableWalls;
     }
