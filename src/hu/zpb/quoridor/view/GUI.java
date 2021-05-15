@@ -194,12 +194,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         lRunClient.setBounds(125, 30, 200, 50);
         JLabel lServerIP = new JLabel("Server IP:");
         lServerIP.setBounds(100, 80, 100, 30);
-<<<<<<< Updated upstream
         tfServerIP = new JTextField("127.0.0.1");
-=======
-//        tfServerIP = new JTextField(GameTRX.getInstance().getMyIP());
-        tfServerIP = new JTextField("0.0.0.0");
->>>>>>> Stashed changes
         tfServerIP.setBounds(200, 80, 150, 30);
         JLabel lServerPort = new JLabel("Server port:");
         lServerPort.setBounds(100, 120, 100, 30);
