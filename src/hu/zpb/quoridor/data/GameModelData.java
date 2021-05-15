@@ -53,6 +53,10 @@ public class GameModelData {
     public void setGameFinished(boolean gameFinished) {
         this.gameFinished = gameFinished;
     }
+
+    public boolean getGameFinished() {
+        return gameFinished;
+    }
 }
 
 

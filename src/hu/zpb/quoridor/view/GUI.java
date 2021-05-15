@@ -392,7 +392,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (gm.getMyPlayerID() == gm.getGameModelData().getCurPlayer().getID()) {
+        if (gm.getMyPlayerID() == gm.getGameModelData().getCurPlayer().getID() && !gm.getGameModelData().getGameFinished()) {
             int x=e.getX();
             int y=e.getY();
             int xCoord = round(x / gridSize);
