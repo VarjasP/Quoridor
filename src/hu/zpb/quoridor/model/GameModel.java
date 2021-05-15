@@ -135,7 +135,10 @@ public class GameModel {
         }
 
         // TODO: játékosokat nem zárjuk el
-
+        Wall newWall = new Wall(pos, orientation);
+        if (isQuarantined(gmd.getPlayerList()[0], newWall) || isQuarantined(gmd.getPlayerList()[1], newWall)) {
+            return false;
+        }
 
         gmd.addWall(new Wall(pos, orientation));
         getCurrentPlayer().minusAvailableWalls();
@@ -224,6 +227,63 @@ public class GameModel {
             }
         }
         return null; // :O TODO
+    }
+
+    private boolean isQuarantined(Player player, Wall newWall) {
+        int[][] flowArr = new int[9][9];
+        flowArr[(int)player.getActualPosition().getX()][(int)player.getActualPosition().getY()] = 1;
+        int watchedNum = 1;
+        boolean modified = true;
+        while(modified) {
+            modified = false;
+            for (int x=0; x<9; x++) {
+                for (int y=0; y<9; y++) {
+                    if (flowArr[x][y] == watchedNum) {
+                        Point currP = new Point(x,y);
+                        Point[] neighborList = new Point[4];
+                        neighborList[0] = new Point(x+1,y);
+                        neighborList[1] = new Point(x-1,y);
+                        neighborList[2] = new Point(x,y+1);
+                        neighborList[3] = new Point(x,y-1);
+                        for (Point currN : neighborList) {
+                            if (isPointWithin(currN, 8,8) && !isWallBetween(currP, currN)) {
+                                if (flowArr[(int)currN.getX()][(int)currN.getY()] == 0) {
+                                    flowArr[(int)currN.getX()][(int)currN.getY()] = watchedNum + 1;
+                                    modified = true;
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+            }
+            watchedNum++;
+        }
+
+        int endRow;
+        if (player.getID() == 0) {
+            endRow = 8;
+        }
+        else {
+            endRow = 0;
+        }
+        boolean obstructed = true;
+        for (int x=0; x<9; x++) {
+            if (flowArr[x][endRow] != 0) {
+                obstructed = false;
+            }
+        }
+
+        // debug print
+        for (int x=0; x<9; x++) {
+            for (int y=0; y<9; y++) {
+                System.out.format("%3d", flowArr[x][y]);
+            }
+            System.out.println("");
+        }
+
+        return obstructed;
     }
 
 }
