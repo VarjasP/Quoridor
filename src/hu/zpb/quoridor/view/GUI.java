@@ -1,5 +1,7 @@
 package hu.zpb.quoridor.view;
 
+import hu.zpb.quoridor.data.GameModelData;
+import hu.zpb.quoridor.data.Player;
 import hu.zpb.quoridor.data.Wall;
 import hu.zpb.quoridor.model.*;
 import hu.zpb.quoridor.network.GameTRX;
@@ -37,6 +39,8 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     private JButton bGiveUp;
 
     private GameModel gm;
+    GameTRX gameTRX;
+
     private Color wallColor;
     private int gridSize = 60;
     private int wallSize = 5;
@@ -90,6 +94,8 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     }
 
     public void drawMenu() {
+        // for connection
+        gameTRX = GameTRX.getInstance();
 
         menuFrame = new JFrame();
 
@@ -198,18 +204,49 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             playerColor = JColorChooser.showDialog(this, "Select a color", Color.BLACK);
             bSelectColor.setBackground(playerColor);
         }
+        // Szerver indítása
         if(e.getSource() == bPlayServer) {
             playerName = tfYourName.getText();
             ipAddress = tfYourIP.getText();
             portNumber = Integer.parseInt(tfSetPort.getText());
             menuFrame.setVisible(false);
-            drawGame();
+
+            gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
+                @Override
+                public void networkEventCallback(GameModelData data) {
+                    gm.updateGame(data);
+                }
+
+                @Override
+                public void playerJoined(Player clientPlayer) {
+                    gm.addPlayers(new Player(new Point(4,0), playerColor, 0, playerName, 10), clientPlayer);
+                    gameTRX.sendGameEvent(gm.getGameModelData());
+                    drawGame();
+                }
+            });
+            gameTRX.createServer(portNumber);
+
         }
+        // Kliens indítása
         if(e.getSource() == bPlayClient) {
             playerName = tfYourName.getText();
             ipAddress = tfServerIP.getText();
             portNumber = Integer.parseInt(tfServerPort.getText());
             menuFrame.setVisible(false);
+
+            gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
+                @Override
+                public void networkEventCallback(GameModelData data) {
+                    gm.updateGame(data);
+                }
+
+                @Override
+                public void playerJoined(Player player) {
+                }
+            });
+            gameTRX.createClient(ipAddress, portNumber);
+            gameTRX.joinPlayer(new Player(new Point(4,8), playerColor, 1, playerName, 10));
+
             drawGame();
         }
     }

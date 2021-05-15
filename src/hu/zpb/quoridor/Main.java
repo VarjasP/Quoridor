@@ -18,38 +18,7 @@ public class Main {
 
         gameGUI.drawMenu();
 
-
         GameTRX gameTRX = GameTRX.getInstance();
         System.out.print(gameTRX.getMyIP());
-
-
-//        // szerver callback in menu
-//        gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
-//            @Override
-//            public void networkEventCallback(GameModelData data) {
-//            }
-//
-//            @Override
-//            public void playerJoined(Player player) {
-//                gameGM.addPlayer(player);
-//                gameTRX.sendGameEvent(gameGM.getGameModelData());
-//                // TODO: start game gui
-//            }
-//        });
-//        gameTRX.createServer();
-
-//       // client callback in menu
-        gameTRX.setNetworkEvent(new GameTRX.NetworkEvent() {
-            @Override
-            public void networkEventCallback(GameModelData data) {
-                // TODO: start game gui
-            }
-
-            @Override
-            public void playerJoined(Player player) {
-            }
-        });
-        gameTRX.createClient("188.156.188.252", 51247);
-        gameTRX.joinPlayer(new Player(new Point(4,0), Color.BLACK, 1, "géza", 10));
     }
 }
