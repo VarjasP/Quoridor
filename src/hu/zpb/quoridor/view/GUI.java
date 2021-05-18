@@ -354,6 +354,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             // Várakozó frame
             drawMenuWaitingForClient();
         }
+
         // Kliens indítása
 
         if(e.getSource() == bPlayClient) {
@@ -384,6 +385,19 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             gameTRX.createClient(ipAddress, portNumber);
             gameTRX.joinPlayer(new Player(new Point(4,8), playerColor, 1, playerName, 10));
             gm.setMyPlayerID(1);
+        }
+
+        // Feladás
+
+        if (e.getSource() == bGiveUp) {
+            if (gm.getMyPlayerID() == 0) {
+                gm.getGameModelData().setWinnerID(1);
+            } else {
+                gm.getGameModelData().setWinnerID(0);
+            }
+            gm.getGameModelData().setGameFinished(true);
+            GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+            refreshGame();
         }
     }
 
