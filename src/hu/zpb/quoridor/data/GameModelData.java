@@ -5,6 +5,7 @@ public class GameModelData {
     protected Wall[] wallList;
     protected Player curPlayer;
     protected boolean gameFinished;
+    protected int winnerID;
 
     public GameModelData() {
         playerList = new Player[2];
@@ -56,6 +57,14 @@ public class GameModelData {
 
     public boolean getGameFinished() {
         return gameFinished;
+    }
+
+    public int getWinnerID() {
+        return winnerID;
+    }
+
+    public void setWinnerID(int winnerID) {
+        this.winnerID = winnerID;
     }
 
     // TODO public Player GetPlayerByID

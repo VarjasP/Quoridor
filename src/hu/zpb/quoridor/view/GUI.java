@@ -156,8 +156,13 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
 
         // Státuszbár frissítése
 
-        // Ha szerver játékos jön
-        if (gm.getGameModelData().getCurPlayer().getID() == 0) {
+        // Ha vége a játéknak
+        if (gm.getGameModelData().getGameFinished() == true) {
+            int wID = gm.getGameModelData().getWinnerID();
+            lCurrentPlayer.setText("Winner: " + gm.getGameModelData().getPlayerList()[wID].getName());
+            lCurrentPlayer.setBounds(0, 200, 300, 30);
+            // Ha szerver játékos jön
+        } else if (gm.getGameModelData().getCurPlayer().getID() == 0) {
             lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[0].getName());
             lCurrentPlayer.setBounds(0, 200, 300, 30);
             // Ha kliens játékos jön

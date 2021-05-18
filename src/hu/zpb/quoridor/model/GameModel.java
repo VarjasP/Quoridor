@@ -61,6 +61,10 @@ public class GameModel {
             endRow = 0;
         }
         if ((int)gmd.getCurPlayer().getActualPosition().getY()==endRow) {
+            if (gmd.getCurPlayer().getID() == 0)
+                gmd.setWinnerID(0);
+            else
+                gmd.setWinnerID(1);
             return true;
         }
         return false;
