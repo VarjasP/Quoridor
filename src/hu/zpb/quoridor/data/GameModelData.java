@@ -1,5 +1,7 @@
 package hu.zpb.quoridor.data;
 
+import java.awt.*;
+
 public class GameModelData {
     protected Player[] playerList;
     protected Wall[] wallList;
@@ -11,6 +13,15 @@ public class GameModelData {
         playerList = new Player[2];
         wallList = new Wall[20];
         gameFinished = false;
+    }
+
+    public void resetGame() {
+        wallList = new Wall[20];
+        gameFinished = false;
+        playerList[0].setActualPosition(new Point(4,0));
+        playerList[1].setActualPosition(new Point(4,8));
+        playerList[0].setAvailableWalls(10);
+        playerList[1].setAvailableWalls(10);
     }
 
     public Player[] getPlayerList() {

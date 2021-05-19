@@ -31,10 +31,14 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     private JPanel serverPanel;
     private JPanel serverWaitingPanel;
     private JDialog dError;
+    private JDialog dEndgame;
 
     private JButton bSelectColor;
     private JButton bPlayServer;
     private JButton bPlayClient;
+    private JButton bGiveUp;
+    private JButton bExit;
+    private JButton bRematch;
     private JTextField tfYourName;
     private JTextField tfYourIP;
     private JTextField tfSetPort;
@@ -43,7 +47,6 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     private JLabel lCurrentPlayer;
     private JLabel lServerPlayerWalls;
     private JLabel lClientPlayerWalls;
-    private JButton bGiveUp;
 
     private String playerName;
     private Color playerColor;
@@ -62,6 +65,8 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         gameJustStarted = true;
         dError = new JDialog(menuFrame, "Error Message", true);
         dError.setSize(500, 120);
+        dEndgame = new JDialog(gameFrame, "Game Finished", true);
+        dEndgame.setSize(400, 200);
     }
 
     public void setGm(GameModel gm) {
@@ -159,16 +164,47 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         // Ha vége a játéknak
         if (gm.getGameModelData().getGameFinished() == true) {
             int wID = gm.getGameModelData().getWinnerID();
-            lCurrentPlayer.setText("Winner: " + gm.getGameModelData().getPlayerList()[wID].getName());
-            lCurrentPlayer.setBounds(0, 200, 300, 30);
+            // TODO Tűzijáték nem működik :(
+            /*
+            Icon imgFireworks = new ImageIcon(this.getClass().getResource("fireworks.gif"));
+            lCurrentPlayer = new JLabel(imgFireworks);
+            lCurrentPlayer.setBounds(80, 150, 140, 105);
+            */
+            lCurrentPlayer.setText("");
+
+            // Felugró ablak
+            JLabel lWinner = new JLabel("Winner: " +
+                gm.getGameModelData().getPlayerList()[wID].getName(), SwingConstants.CENTER);
+            lWinner.setBounds(100, 20, 200, 30);
+            lWinner.setFont(new Font("Arial", Font.PLAIN, 16));
+            JLabel lQuestion = new JLabel("Do you want to play again?", SwingConstants.CENTER);
+            lQuestion.setBounds(100, 60, 200, 30);
+            lQuestion.setFont(new Font("Arial", Font.PLAIN, 14));
+
+            bRematch = new JButton("Yes");
+            bRematch.setBounds(115, 90, 70, 30);
+            bRematch.addActionListener(this);
+            bExit = new JButton("No");
+            bExit.setBounds(215, 90, 70, 30);
+            bExit.addActionListener(this);
+
+            dEndgame.add(lWinner);
+            dEndgame.add(lQuestion);
+            dEndgame.add(bRematch);
+            dEndgame.add(bExit);
+            dEndgame.setLayout(null);
+            dEndgame.setLocationRelativeTo(null);
+            dEndgame.setVisible(true);
+        } else {
             // Ha szerver játékos jön
-        } else if (gm.getGameModelData().getCurPlayer().getID() == 0) {
-            lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[0].getName());
-            lCurrentPlayer.setBounds(0, 200, 300, 30);
-            // Ha kliens játékos jön
-        } else if (gm.getGameModelData().getCurPlayer().getID() == 1) {
-            lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[1].getName());
-            lCurrentPlayer.setBounds(0, 370, 300, 30);
+            if (gm.getGameModelData().getCurPlayer().getID() == 0) {
+                lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[0].getName());
+                lCurrentPlayer.setBounds(0, 200, 300, 30);
+                // Ha kliens játékos jön
+            } else if (gm.getGameModelData().getCurPlayer().getID() == 1) {
+                lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[1].getName());
+                lCurrentPlayer.setBounds(0, 370, 300, 30);
+            }
         }
         lServerPlayerWalls.setText("Available walls: " +
                 Integer.toString(gm.getGameModelData().getPlayerList()[0].getAvailableWalls()));
@@ -396,6 +432,18 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
                 gm.getGameModelData().setWinnerID(0);
             }
             gm.getGameModelData().setGameFinished(true);
+            GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
+            refreshGame();
+        }
+
+        // Játék vége
+        if (e.getSource() == bExit) {
+            dEndgame.setVisible(false);
+            System.exit(0);
+        }
+        if (e.getSource() == bRematch) {
+            dEndgame.setVisible(false);
+            gm.getGameModelData().resetGame();
             GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
             refreshGame();
         }
