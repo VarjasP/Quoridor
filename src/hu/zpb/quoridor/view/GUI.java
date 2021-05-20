@@ -84,7 +84,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
 
         Icon imgIcon = new ImageIcon(getClass().getResource("fireworks.gif"));
         lFireWorks = new JLabel(imgIcon, SwingConstants.CENTER);
-        lFireWorks.setBounds(0, 0, 800, 600);
+        lFireWorks.setBounds(100, 0, 800, 600);
         lFireWorks.setVisible(false);
         gameFrame.add(lFireWorks);
 
@@ -110,7 +110,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         // Szerver játékos adatai
 
         JLabel lServerPlayerName = new JLabel(gm.getGameModelData().getPlayerList()[0].getName(), SwingConstants.CENTER);
-        lServerPlayerName.setBounds(100, 50, 100, 30);
+        lServerPlayerName.setBounds(0, 50, 300, 30);
         lServerPlayerName.setFont(new Font("Arial", Font.PLAIN, 24));
         statusBar.add(lServerPlayerName);
 
@@ -144,12 +144,12 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         lCurrentPlayer.setHorizontalAlignment(SwingConstants.CENTER);
         statusBar.add(lCurrentPlayer);
 
+        // Kliens játékos adatai
+
         JLabel lClientPlayerName = new JLabel(gm.getGameModelData().getPlayerList()[1].getName(), SwingConstants.CENTER);
-        lClientPlayerName.setBounds(100, 450, 100, 30);
+        lClientPlayerName.setBounds(0, 450, 300, 30);
         lClientPlayerName.setFont(new Font("Arial", Font.PLAIN, 24));
         statusBar.add(lClientPlayerName);
-
-        // Kliens játékos adatai
 
         lClientPlayerWalls = new JLabel("Available walls: " +
                 Integer.toString(gm.getGameModelData().getPlayerList()[1].getAvailableWalls()), SwingConstants.CENTER);
@@ -173,12 +173,6 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         // Ha vége a játéknak
         if (gm.getGameModelData().getGameFinished() == true) {
             int wID = gm.getGameModelData().getWinnerID();
-            // TODO Tűzijáték nem működik :(
-            /*
-            Icon imgFireworks = new ImageIcon(this.getClass().getResource("fireworks.gif"));
-            lCurrentPlayer = new JLabel(imgFireworks);
-            lCurrentPlayer.setBounds(80, 150, 140, 105);
-            */
             bRematch.setVisible(true);
             bGiveUp.setVisible(false);
             lCurrentPlayer.setText("Winner: " + gm.getGameModelData().getPlayerList()[wID].getName());
@@ -198,6 +192,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             }
             bGiveUp.setVisible(true);
             bRematch.setVisible(false);
+            lFireWorks.setVisible(false);
         }
         lServerPlayerWalls.setText("Available walls: " +
                 Integer.toString(gm.getGameModelData().getPlayerList()[0].getAvailableWalls()));

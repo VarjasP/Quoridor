@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Quoridor:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Quoridor_jar</output-path>
+    <root id="archive" name="Quoridor.jar">
+      <element id="module-output" name="Quoridor" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/dependency/gson-2.8.6.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
