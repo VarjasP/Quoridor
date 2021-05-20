@@ -43,6 +43,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     private JLabel lCurrentPlayer;
     private JLabel lServerPlayerWalls;
     private JLabel lClientPlayerWalls;
+    private JLabel lFireWorks;
     private JButton bGiveUp;
 
     private String playerName;
@@ -75,6 +76,12 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     public void drawGame() {
         gameFrame = new JFrame(); //creating instance of JFrame
         gameFrame.setSize(900, 600);
+
+        Icon imgIcon = new ImageIcon(getClass().getResource("fireworks.gif"));
+        lFireWorks = new JLabel(imgIcon, SwingConstants.CENTER);
+        lFireWorks.setBounds(0, 0, 800, 600);
+        lFireWorks.setVisible(false);
+        gameFrame.add(lFireWorks);
 
         // Játéktér
 
@@ -150,6 +157,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         gameFrame.setResizable(false);
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);
+        gameFrame.setDefaultCloseOperation((JFrame.EXIT_ON_CLOSE));
     }
 
     public void refreshGame(){
@@ -161,6 +169,9 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             int wID = gm.getGameModelData().getWinnerID();
             lCurrentPlayer.setText("Winner: " + gm.getGameModelData().getPlayerList()[wID].getName());
             lCurrentPlayer.setBounds(0, 200, 300, 30);
+            if (wID == gm.getMyPlayerID()) {
+                lFireWorks.setVisible(true);
+            }
             // Ha szerver játékos jön
         } else if (gm.getGameModelData().getCurPlayer().getID() == 0) {
             lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[0].getName());
