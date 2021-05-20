@@ -31,13 +31,11 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
     private JPanel serverPanel;
     private JPanel serverWaitingPanel;
     private JDialog dError;
-    private JDialog dEndgame;
 
     private JButton bSelectColor;
     private JButton bPlayServer;
     private JButton bPlayClient;
     private JButton bGiveUp;
-    private JButton bExit;
     private JButton bRematch;
     private JTextField tfYourName;
     private JTextField tfYourIP;
@@ -65,8 +63,10 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         gameJustStarted = true;
         dError = new JDialog(menuFrame, "Error Message", true);
         dError.setSize(500, 120);
-        dEndgame = new JDialog(gameFrame, "Game Finished", true);
-        dEndgame.setSize(400, 200);
+        bRematch = new JButton("Rematch");
+        bRematch.setBounds(100, 370, 100, 40);
+        bRematch.addActionListener(this);
+        bRematch.setVisible(false);
     }
 
     public void setGm(GameModel gm) {
@@ -116,9 +116,10 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         // Feladás gomb
 
         bGiveUp = new JButton("Give up");
-        bGiveUp.setBounds(110, 280, 80, 40);
+        bGiveUp.setBounds(100, 280, 100, 40);
         bGiveUp.addActionListener(this);
         statusBar.add(bGiveUp);
+        statusBar.add(bRematch);
 
         // Aktuális játékos
         lCurrentPlayer = new JLabel();
@@ -170,31 +171,10 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             lCurrentPlayer = new JLabel(imgFireworks);
             lCurrentPlayer.setBounds(80, 150, 140, 105);
             */
-            lCurrentPlayer.setText("");
-
-            // Felugró ablak
-            JLabel lWinner = new JLabel("Winner: " +
-                gm.getGameModelData().getPlayerList()[wID].getName(), SwingConstants.CENTER);
-            lWinner.setBounds(100, 20, 200, 30);
-            lWinner.setFont(new Font("Arial", Font.PLAIN, 16));
-            JLabel lQuestion = new JLabel("Do you want to play again?", SwingConstants.CENTER);
-            lQuestion.setBounds(100, 60, 200, 30);
-            lQuestion.setFont(new Font("Arial", Font.PLAIN, 14));
-
-            bRematch = new JButton("Yes");
-            bRematch.setBounds(115, 90, 70, 30);
-            bRematch.addActionListener(this);
-            bExit = new JButton("No");
-            bExit.setBounds(215, 90, 70, 30);
-            bExit.addActionListener(this);
-
-            dEndgame.add(lWinner);
-            dEndgame.add(lQuestion);
-            dEndgame.add(bRematch);
-            dEndgame.add(bExit);
-            dEndgame.setLayout(null);
-            dEndgame.setLocationRelativeTo(null);
-            dEndgame.setVisible(true);
+            bRematch.setVisible(true);
+            bGiveUp.setVisible(false);
+            lCurrentPlayer.setText("Winner: " + gm.getGameModelData().getPlayerList()[wID].getName());
+            lCurrentPlayer.setBounds(0, 200, 300, 30);
         } else {
             // Ha szerver játékos jön
             if (gm.getGameModelData().getCurPlayer().getID() == 0) {
@@ -205,6 +185,8 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
                 lCurrentPlayer.setText("Your turn: " + gm.getGameModelData().getPlayerList()[1].getName());
                 lCurrentPlayer.setBounds(0, 370, 300, 30);
             }
+            bGiveUp.setVisible(true);
+            bRematch.setVisible(false);
         }
         lServerPlayerWalls.setText("Available walls: " +
                 Integer.toString(gm.getGameModelData().getPlayerList()[0].getAvailableWalls()));
@@ -436,17 +418,17 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
             refreshGame();
         }
 
-        // Játék vége
-        if (e.getSource() == bExit) {
-            dEndgame.setVisible(false);
-            System.exit(0);
-        }
+        // Rematch
+
         if (e.getSource() == bRematch) {
-            dEndgame.setVisible(false);
+            int wID = gm.getGameModelData().getWinnerID();
+            int lID = ((wID + 1) % 2);
             gm.getGameModelData().resetGame();
+            gm.getGameModelData().setCurPlayer(gm.getGameModelData().getPlayerList()[lID]);
             GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
             refreshGame();
         }
+
     }
 
 
