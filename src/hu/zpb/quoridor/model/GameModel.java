@@ -68,11 +68,6 @@ public class GameModel {
         }
         return false;
     }
-
-    protected void makeMove() {
-
-        GameTRX.getInstance().sendGameEvent(gmd);
-    }
     public void updateGame(GameModelData newData) {
         gmd = newData;
         gui.refreshGame();
