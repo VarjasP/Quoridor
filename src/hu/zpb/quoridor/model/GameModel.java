@@ -116,13 +116,22 @@ public class GameModel {
            isPointAdjacent(getOtherPlayer().getActualPosition(), newPos) &&
            !isWallBetween(curPos, getOtherPlayer().getActualPosition()) &&
            !isWallBetween(getOtherPlayer().getActualPosition(), newPos)){
-            gmd.getCurPlayer().setActualPosition(newPos);
-            gmd.getPlayerList()[gmd.getCurPlayer().getID()] = gmd.getCurPlayer();
-            if (isGameFinished()) {
-                gmd.setGameFinished(true);
+            // átugrandó játékos mögötti cella
+            Point behindCell = new Point((int)(2*getOtherPlayer().getActualPosition().getX() - curPos.getX()),
+                    (int)(2*getOtherPlayer().getActualPosition().getY() - curPos.getY()));
+            System.out.print("Behind cell: ");
+            System.out.println(behindCell);
+            // ellenfelet csak akkor ugorhatjuk átlósan, ha mögötte fal ven
+            if(isPointSame(newPos, behindCell) || isWallBetween(getOtherPlayer().getActualPosition(), behindCell)) {
+                System.out.println();
+                gmd.getCurPlayer().setActualPosition(newPos);
+                gmd.getPlayerList()[gmd.getCurPlayer().getID()] = gmd.getCurPlayer();
+                if (isGameFinished()) {
+                    gmd.setGameFinished(true);
+                }
+                gmd.setCurPlayer(getOtherPlayer());
+                return true;
             }
-            gmd.setCurPlayer(getOtherPlayer());
-            return true;
         }
 
         return false;
@@ -204,6 +213,11 @@ public class GameModel {
         int p1y = (int)pointFrom.getY();
         int p2x = (int)pointTo.getX();
         int p2y = (int)pointTo.getY();
+
+        // pályán kívüli pont esetében "fal" van a két játékos között
+        if(!isPointWithin(pointFrom, 8, 8) || !isPointWithin(pointTo, 8, 8)) {
+            return true;
+        }
 
         // jobbra
         if(p2x-p1x == 1){
