@@ -9,11 +9,6 @@ import java.net.*;
 import com.google.gson.Gson;
 import hu.zpb.quoridor.model.*;
 
-/*  TODO **
-* crateServer() többször is hívható legyen
-* hibakezelés magasabb szintre
- */
-
 public class GameTRX extends Thread{
     public enum GameTRXType{
         SERVER, CLIENT

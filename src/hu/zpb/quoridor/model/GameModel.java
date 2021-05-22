@@ -89,7 +89,6 @@ public class GameModel {
 
     public boolean movePlayer(Point newPos) {
         Point curPos = gmd.getCurPlayer().getActualPosition();
-        // TODO: check curPlayer is the actual player
 
         if(!isPointWithin(newPos, 8, 8)){
             return false;
@@ -246,8 +245,6 @@ public class GameModel {
         return false;
     }
 
-
-    // TODO: ezek game model databa?
     private  Player getOtherPlayer() {
         for (Player p : gmd.getPlayerList()) {
             if (p.getID() != gmd.getCurPlayer().getID()) {
@@ -255,7 +252,7 @@ public class GameModel {
             }
         }
 
-        return null; // :O
+        return null;
     }
 
     private Wall getWallBy(Point position, Character orientation){
@@ -266,7 +263,7 @@ public class GameModel {
                 }
             }
         }
-        return null; // :O TODO
+        return null;
     }
 
     private Wall getWallBy(Point position, Character orientation, Wall extraWall){
@@ -283,7 +280,7 @@ public class GameModel {
                 }
             }
         }
-        return null; // :O TODO
+        return null;
     }
 
     private boolean isQuarantined(Player player, Wall newWall) {
