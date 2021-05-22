@@ -17,7 +17,6 @@ public class GameModel {
 
     public GameModel() {
         gmd = new GameModelData();
-        System.out.println("Szevasz Pista");
 
         GameTRX.getInstance().setNetworkEvent(new GameTRX.NetworkEvent() {
             @Override
