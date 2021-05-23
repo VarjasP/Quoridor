@@ -77,8 +77,6 @@ public class GameModelData {
     public void setWinnerID(int winnerID) {
         this.winnerID = winnerID;
     }
-
-    // TODO public Player GetPlayerByID
 }
 
 

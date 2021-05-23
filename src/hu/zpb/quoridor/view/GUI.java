@@ -399,7 +399,6 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
                     } else {
                         gm.updateGame(data);
                     }
-
                 }
 
                 @Override
@@ -436,7 +435,6 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
         }
 
     }
-
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -488,10 +486,7 @@ public class GUI extends JComponent implements ActionListener, MouseListener {
                     GameTRX.getInstance().sendGameEvent(gm.getGameModelData());
                 }
             }
-
         }
-
-
     }
 
     @Override
