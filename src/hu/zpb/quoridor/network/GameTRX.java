@@ -193,7 +193,7 @@ public class GameTRX extends Thread{
 
                 switch(splitData[0])
                 {
-                    case "GameModel":
+                    case "GameModelData":
                         try {
                             GameModelData gm = gson.fromJson(splitData[1], GameModelData.class);
                             networkEvent.networkEventCallback(gm);
@@ -219,7 +219,7 @@ public class GameTRX extends Thread{
 
     public void sendGameEvent(GameModelData data)
     {
-        String msg = "GameModel#";
+        String msg = "GameModelData#";
         msg += gson.toJson(data, GameModelData.class);
         socketThread.send(msg);
     }
